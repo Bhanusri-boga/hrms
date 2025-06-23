@@ -1,0 +1,179 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "admin@hrms.com",
+      "password": "admin123",
+      "name": "Admin User",
+      "role": "admin",
+      "permissions": ["all"]
+    },
+    {
+      "id": 2,
+      "email": "manager@hrms.com",
+      "password": "manager123",
+      "name": "Manager User",
+      "role": "manager",
+      "permissions": ["view_employees", "manage_team", "approve_leaves"]
+    }
+  ],
+  "auth": {
+    "login": {
+      "id": 1,
+      "token": "fake-jwt-token",
+      "accessToken": "fake-jwt-token",
+      "refreshToken": "fake-refresh-token",
+      "user": {
+        "id": 1,
+        "email": "admin@hrms.com",
+        "name": "Admin User",
+        "role": "admin",
+        "permissions": ["all"]
+      }
+    },
+    "me": {
+      "id": 1,
+      "email": "admin@hrms.com",
+      "name": "Admin User",
+      "role": "admin",
+      "permissions": ["all"]
+    }
+  },
+  "employees": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "position": "Senior Developer",
+      "department": "Engineering",
+      "joinDate": "2023-01-15",
+      "status": "active"
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "position": "HR Manager",
+      "department": "Human Resources",
+      "joinDate": "2023-02-20",
+      "status": "active"
+    }
+  ],
+  "departments": [
+    {
+      "id": 1,
+      "name": "Engineering",
+      "manager": 1,
+      "budget": 500000,
+      "employees": [1, 3, 4]
+    },
+    {
+      "id": 2,
+      "name": "Human Resources",
+      "manager": 2,
+      "budget": 300000,
+      "employees": [2, 5]
+    }
+  ],
+  "positions": [
+    {
+      "id": 1,
+      "title": "Senior Developer",
+      "department": 1,
+      "salary": 120000,
+      "requirements": ["5+ years experience", "React", "Node.js"]
+    },
+    {
+      "id": 2,
+      "title": "HR Manager",
+      "department": 2,
+      "salary": 90000,
+      "requirements": ["3+ years HR experience", "Recruitment", "Employee Relations"]
+    }
+  ],
+  "attendance": [
+    {
+      "id": 1,
+      "employeeId": 1,
+      "date": "2024-03-20",
+      "checkIn": "09:00",
+      "checkOut": "17:00",
+      "status": "present"
+    },
+    {
+      "id": 2,
+      "employeeId": 2,
+      "date": "2024-03-20",
+      "checkIn": "09:15",
+      "checkOut": "17:30",
+      "status": "present"
+    }
+  ],
+  "leaves": [
+    {
+      "id": 1,
+      "employeeId": 1,
+      "type": "annual",
+      "startDate": "2024-04-01",
+      "endDate": "2024-04-05",
+      "status": "pending"
+    }
+  ],
+  "payroll": [
+    {
+      "id": 1,
+      "employeeId": 1,
+      "month": "2024-03",
+      "basicSalary": 10000,
+      "allowances": 2000,
+      "deductions": 1000,
+      "netSalary": 11000,
+      "status": "pending"
+    }
+  ],
+  "documents": [
+    {
+      "id": 1,
+      "name": "Employment Contract",
+      "type": "contract",
+      "employeeId": 1,
+      "uploadDate": "2024-03-20",
+      "url": "/documents/contract-1.pdf"
+    }
+  ],
+  "notifications": [
+    {
+      "id": 1,
+      "userId": 1,
+      "title": "New Leave Request",
+      "message": "You have a new leave request to review",
+      "type": "leave",
+      "read": false,
+      "createdAt": "2024-03-20T10:00:00Z"
+    }
+  ],
+  "roles": [
+    {
+      "id": 1,
+      "name": "admin",
+      "permissions": ["all"]
+    },
+    {
+      "id": 2,
+      "name": "manager",
+      "permissions": ["view_employees", "manage_team", "approve_leaves"]
+    }
+  ],
+  "settings": {
+    "company": {
+      "name": "HRMS Corp",
+      "address": "123 Business St",
+      "phone": "123-456-7890",
+      "email": "contact@hrms.com"
+    },
+    "workflows": {
+      "leaveApproval": ["manager", "hr"],
+      "expenseApproval": ["manager", "finance"]
+    }
+  }
+} 

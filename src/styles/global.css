@@ -1,0 +1,154 @@
+/* Import Google Fonts - Orbitron & Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-50: #f0f9ff;
+  --primary-100: #e0f2fe;
+  --primary-200: #bae6fd;
+  --primary-300: #7dd3fc;
+  --primary-400: #38bdf8;
+  --primary-500: #0ea5e9;
+  --primary-600: #0284c7;
+  --primary-700: #0369a1;
+  --primary-800: #075985;
+  --primary-900: #0c4a6e;
+}
+
+@layer base {
+  /* Apply base styles for the futuristic dark mode theme */
+  html,
+  body {
+    @apply bg-gray-50 text-gray-900;
+    font-family: theme('fontFamily.sans'); /* Default to Poppins */
+    overscroll-behavior: none; /* Prevent pull-to-refresh and other overscroll behaviors */
+  }
+
+  body.dark {
+    @apply bg-dark-900 text-gray-100; /* Ensure dark mode is consistently applied */
+  }
+
+  /* Headings use Orbitron */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display text-primary-200;
+    letter-spacing: theme('letterSpacing.wider');
+  }
+
+  /* Custom scrollbar for a more futuristic feel */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-400 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+  }
+
+  /* Selection highlight style */
+  ::selection {
+    @apply bg-primary-500 text-white;
+  }
+  ::-moz-selection {
+    @apply bg-primary-500 text-white;
+  }
+
+  /* Remove default focus outline and use custom (Tailwind's ring or custom box-shadow) */
+  *:focus {
+    outline: none;
+  }
+  *:focus-visible {
+    @apply ring-2 ring-primary-400 ring-offset-2 ring-offset-dark-900;
+  }
+}
+
+@layer components {
+  /* Glassmorphism base style */
+  .glass-card-base {
+    @apply bg-dark-700 bg-opacity-30 backdrop-blur-lg border border-primary-700 border-opacity-40 rounded-2xl shadow-glass-dark;
+  }
+
+  /* Neon text effect */
+  .neon-text-primary {
+    @apply text-primary-400;
+    text-shadow: 
+      0 0 5px theme('colors.primary.500'),
+      0 0 10px theme('colors.primary.600'),
+      0 0 15px theme('colors.neon.primary');
+  }
+
+  .neon-text-purple {
+    @apply text-neon-purple;
+    text-shadow: 
+      0 0 5px theme('colors.neon.purple'),
+      0 0 10px theme('colors.neon.purple'),
+      0 0 15px theme('colors.neon.purple');
+  }
+
+  /* Button base styles - to be extended by specific button components */
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+  }
+
+  .btn-secondary {
+    @apply bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-primary-500;
+  }
+
+  /* Input field base styles */
+  .input {
+    @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow-sm p-6;
+  }
+}
+
+@layer utilities {
+  /* Custom animation for glowing borders or backgrounds */
+  .animate-pulse-glow-primary {
+    animation: pulseGlowPrimary 2s infinite ease-in-out;
+  }
+  @keyframes pulseGlowPrimary {
+    0%, 100% { box-shadow: 0 0 5px theme('colors.primary.700'), 0 0 10px theme('colors.primary.700'); opacity: 0.8; }
+    50% { box-shadow: 0 0 15px theme('colors.neon.primary'), 0 0 25px theme('colors.neon.primary'); opacity: 1; }
+  }
+
+  .animate-float-fast {
+    animation: floatFast 4s ease-in-out infinite;
+  }
+  @keyframes floatFast {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .animate-subtle-glow {
+    animation: subtleGlow 3s infinite alternate;
+  }
+  @keyframes subtleGlow {
+    from { text-shadow: 0 0 2px theme('colors.neon.primary'); }
+    to { text-shadow: 0 0 6px theme('colors.neon.primary'), 0 0 10px theme('colors.neon.purple'); }
+  }
+  
+  /* Hide scrollbar utility */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}
