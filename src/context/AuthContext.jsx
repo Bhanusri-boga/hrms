@@ -86,7 +86,10 @@ const logout = async () => {
     loading,
     login,
     logout,
-    checkAuth
+    checkAuth,
+    // Role helpers
+    hasRole: (role) => user?.userRoles?.includes(role),
+    isMainRole: (role) => user?.role === role
   };
 
   return (

@@ -177,7 +177,7 @@ const Navbar = ({ toggleSidebar }) => {
                     )}
                   </div>
                   
-                  <div className="max-h-80 overflow-y-auto">
+                  <div className="max-h-80">
                     {notifications.length > 0 ? (
                       notifications.map(notification => (
                         <div

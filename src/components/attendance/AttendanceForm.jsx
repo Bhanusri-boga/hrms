@@ -4,7 +4,7 @@ import Modal from '../common/Modal';
 import FormInput from '../common/FormInput';
 import FormSelect from '../common/FormSelect';
 
-const AttendanceForm = ({ attendance, employees, onSubmit, onClose }) => {
+const AttendanceForm = ({ attendance, employees, onSubmit, onClose, readOnly }) => {
   const { values, errors, handleChange, handleBlur, validateForm } = useForm(
     {
       employeeId: attendance?.employeeId || '',
@@ -38,8 +38,10 @@ const AttendanceForm = ({ attendance, employees, onSubmit, onClose }) => {
 
   return (
     <Modal
-      title={attendance ? 'Edit Attendance' : 'Add Attendance'}
+      isOpen={true}
+      title={attendance ? (readOnly ? 'View Attendance' : 'Edit Attendance') : 'Add Attendance'}
       onClose={onClose}
+      size="md"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <FormSelect
@@ -54,6 +56,7 @@ const AttendanceForm = ({ attendance, employees, onSubmit, onClose }) => {
             label: emp.name
           }))}
           required
+          disabled={readOnly}
         />
 
         <FormInput
@@ -65,6 +68,7 @@ const AttendanceForm = ({ attendance, employees, onSubmit, onClose }) => {
           onBlur={handleBlur}
           error={errors.date}
           required
+          disabled={readOnly}
         />
 
         <div className="grid grid-cols-2 gap-4">
@@ -76,6 +80,7 @@ const AttendanceForm = ({ attendance, employees, onSubmit, onClose }) => {
             onChange={handleChange}
             onBlur={handleBlur}
             error={errors.inTime}
+            disabled={readOnly}
           />
 
           <FormInput
@@ -86,6 +91,7 @@ const AttendanceForm = ({ attendance, employees, onSubmit, onClose }) => {
             onChange={handleChange}
             onBlur={handleBlur}
             error={errors.outTime}
+            disabled={readOnly}
           />
         </div>
 
@@ -98,6 +104,7 @@ const AttendanceForm = ({ attendance, employees, onSubmit, onClose }) => {
           error={errors.status}
           options={statusOptions}
           required
+          disabled={readOnly}
         />
 
         <FormInput
@@ -108,6 +115,7 @@ const AttendanceForm = ({ attendance, employees, onSubmit, onClose }) => {
           onChange={handleChange}
           onBlur={handleBlur}
           error={errors.note}
+          disabled={readOnly}
         />
 
         <div className="flex justify-end space-x-3 mt-6">
@@ -116,14 +124,16 @@ const AttendanceForm = ({ attendance, employees, onSubmit, onClose }) => {
             onClick={onClose}
             className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
           >
-            Cancel
+            {readOnly ? 'Close' : 'Cancel'}
           </button>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            {attendance ? 'Update' : 'Create'}
-          </button>
+          {!readOnly && (
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              {attendance ? 'Update' : 'Create'}
+            </button>
+          )}
         </div>
       </form>
     </Modal>

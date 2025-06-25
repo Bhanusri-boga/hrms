@@ -75,3 +75,7 @@ export const formatDuration = (hours) => {
   const m = Math.round((hours - h) * 60);
   return m > 0 ? `${h}h ${m}m` : `${h}h`;
 }; 
+
+export function formatDateTime(date) {
+  return new Date(date).toLocaleString();
+}

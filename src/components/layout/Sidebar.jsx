@@ -16,7 +16,8 @@ const menuItems = [
         <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
         <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
       </svg>
-    )
+    ),
+    roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE']
   },
   {
     title: 'Employees',
@@ -25,7 +26,8 @@ const menuItems = [
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
         <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
       </svg>
-    )
+    ),
+    roles: ['ADMIN', 'HR', 'MANAGER']
   },
   {
     title: 'Attendance',
@@ -34,7 +36,8 @@ const menuItems = [
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
       </svg>
-    )
+    ),
+    roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE']
   },
   {
     title: 'Time Sheets',
@@ -43,7 +46,8 @@ const menuItems = [
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
         <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
       </svg>
-    )
+    ),
+    roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE']
   },
   {
     title: 'Documents',
@@ -52,7 +56,8 @@ const menuItems = [
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
         <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
       </svg>
-    )
+    ),
+    roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE']
   },
   {
     title: 'Salary',
@@ -62,7 +67,8 @@ const menuItems = [
         <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd" />
       </svg>
-    )
+    ),
+    roles: ['ADMIN', 'HR']
   },
   {
     title: 'Travel',
@@ -71,7 +77,8 @@ const menuItems = [
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
         <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
       </svg>
-    )
+    ),
+    roles: ['ADMIN', 'HR', 'MANAGER']
   },
   {
     title: 'Reports',
@@ -80,7 +87,8 @@ const menuItems = [
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
         <path fillRule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 0l-2 2a1 1 0 101.414 1.414L8 10.414l1.293 1.293a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
       </svg>
-    )
+    ),
+    roles: ['ADMIN', 'HR', 'MANAGER']
   },
   {
     title: '3D Demo',
@@ -89,7 +97,8 @@ const menuItems = [
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
       </svg>
-    )
+    ),
+    roles: ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE']
   }
 ];
 
@@ -192,9 +201,8 @@ const Sidebar = ({ isOpen = true }) => {
         {/* Navigation */}
         <div className="flex-1 py-6 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-700 scrollbar-track-dark-500">
           <nav className="px-4 space-y-1">
-            {menuItems.map((item) => {
+            {menuItems.filter(item => user && (item.roles.includes(user.role) || (user.userRoles && user.userRoles.some(r => item.roles.includes(r))))).map((item) => {
               const isActive = activeMenu.startsWith(item.path);
-              
               return (
                 <NavLink
                   key={item.path}
@@ -212,7 +220,6 @@ const Sidebar = ({ isOpen = true }) => {
                   }`}>
                     {item.icon}
                   </div>
-                  
                   <AnimatePresence>
                     {isOpen && (
                       <motion.span
@@ -226,8 +233,6 @@ const Sidebar = ({ isOpen = true }) => {
                       </motion.span>
                     )}
                   </AnimatePresence>
-                  
-                  {/* Animated indicator for active item */}
                   {isActive && (
                     <motion.div 
                       className="ml-auto h-2 w-2 rounded-full bg-primary-500 animate-pulse"

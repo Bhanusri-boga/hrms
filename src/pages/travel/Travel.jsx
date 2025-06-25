@@ -3,6 +3,7 @@ import { useFetch } from '../../hooks/useFetch';
 import { useNotification } from '../../context/NotificationContext';
 import TravelForm from '../../components/travel/TravelForm';
 import TravelDetail from '../../components/travel/TravelDetail';
+import TravelList from '../../components/travel/TravelList';
 
 const Travel = () => {
   const [filterStatus, setFilterStatus] = useState('all');
@@ -10,10 +11,10 @@ const Travel = () => {
   const [viewingRequest, setViewingRequest] = useState(null);
   const [editingRequest, setEditingRequest] = useState(null);
   const [travelRequests, setTravelRequests] = useState([
-    { 
-      id: 1, 
-      employeeId: 101, 
-      employeeName: 'John Doe', 
+    {
+      id: 1,
+      employeeId: 101,
+      employeeName: 'John Doe',
       destination: 'New York, USA',
       purpose: 'Client Meeting',
       departureDate: '2023-06-15',
@@ -22,10 +23,10 @@ const Travel = () => {
       status: 'pending',
       notes: 'Meeting with potential clients to discuss project requirements'
     },
-    { 
-      id: 2, 
-      employeeId: 102, 
-      employeeName: 'Jane Smith', 
+    {
+      id: 2,
+      employeeId: 102,
+      employeeName: 'Jane Smith',
       destination: 'London, UK',
       purpose: 'Conference',
       departureDate: '2023-07-10',
@@ -34,10 +35,10 @@ const Travel = () => {
       status: 'approved',
       notes: 'Attending the annual tech conference'
     },
-    { 
-      id: 3, 
-      employeeId: 103, 
-      employeeName: 'Michael Johnson', 
+    {
+      id: 3,
+      employeeId: 103,
+      employeeName: 'Michael Johnson',
       destination: 'Tokyo, Japan',
       purpose: 'Training',
       departureDate: '2023-08-05',
@@ -46,10 +47,10 @@ const Travel = () => {
       status: 'rejected',
       notes: 'Advanced training on new technologies'
     },
-    { 
-      id: 4, 
-      employeeId: 104, 
-      employeeName: 'Emily Davis', 
+    {
+      id: 4,
+      employeeId: 104,
+      employeeName: 'Emily Davis',
       destination: 'Berlin, Germany',
       purpose: 'Project Kickoff',
       departureDate: '2023-06-25',
@@ -59,9 +60,9 @@ const Travel = () => {
       notes: 'Initial meeting with the client team for project kickoff'
     },
   ]);
-  
+
   const { addNotification } = useNotification();
-  
+
   // Fetch travel requests data
   const { data: travelData, loading } = useFetch(`/travel-requests?status=${filterStatus}`);
 
@@ -96,32 +97,24 @@ const Travel = () => {
   const handleSubmitRequest = async (id, formData) => {
     try {
       if (id) {
-        // This would be an API call to update travel request
-        // const response = await updateTravelRequest(id, formData);
-        console.log('Updating travel request:', id, formData);
-        
-        // For mock data: Update the request in local state
-        setTravelRequests(travelRequests.map(request => 
+        // Update the request in local state
+        setTravelRequests(travelRequests.map(request =>
           request.id === id
             ? {
-                ...request,
-                ...formData,
-                departureDate: formData.startDate,
-                returnDate: formData.endDate,
-                notes: formData.comments
-              }
+              ...request,
+              ...formData,
+              departureDate: formData.startDate,
+              returnDate: formData.endDate,
+              notes: formData.comments
+            }
             : request
         ));
       } else {
-        // This would be an API call to create travel request
-        // const response = await createTravelRequest(formData);
-        console.log('Submitting new travel request:', formData);
-        
-        // For mock data: Add the new request to the local state
+        // Add the new request to the local state
         const newRequest = {
           id: travelRequests.length + 1,
           employeeId: formData.employeeId,
-          employeeName: 'Current User', // This would come from your auth context in real app
+          employeeName: 'Current User', // Replace with real user in production
           destination: formData.destination,
           purpose: formData.purpose,
           departureDate: formData.startDate,
@@ -133,7 +126,7 @@ const Travel = () => {
 
         setTravelRequests([...travelRequests, newRequest]);
       }
-      
+
       addNotification({
         type: 'success',
         message: id ? 'Travel request updated successfully' : 'Travel request submitted successfully'
@@ -148,15 +141,14 @@ const Travel = () => {
     }
   };
 
-  const handleApprove = async (requestId) => {
+  const handleApprove = async (request) => {
     try {
-      // Update the status in local state for mock data
-      setTravelRequests(travelRequests.map(request => 
-        request.id === requestId 
-          ? { ...request, status: 'approved' }
-          : request
+      setTravelRequests(travelRequests.map(r =>
+        r.id === request.id
+          ? { ...r, status: 'approved' }
+          : r
       ));
-      
+
       addNotification({
         type: 'success',
         message: 'Travel request approved successfully'
@@ -169,15 +161,14 @@ const Travel = () => {
     }
   };
 
-  const handleReject = async (requestId) => {
+  const handleReject = async (request) => {
     try {
-      // Update the status in local state for mock data
-      setTravelRequests(travelRequests.map(request => 
-        request.id === requestId 
-          ? { ...request, status: 'rejected' }
-          : request
+      setTravelRequests(travelRequests.map(r =>
+        r.id === request.id
+          ? { ...r, status: 'rejected' }
+          : r
       ));
-      
+
       addNotification({
         type: 'success',
         message: 'Travel request rejected'
@@ -194,8 +185,8 @@ const Travel = () => {
   const displayData = travelData || travelRequests;
 
   // Filter travel requests based on selected status
-  const filteredRequests = filterStatus === 'all' 
-    ? displayData 
+  const filteredRequests = filterStatus === 'all'
+    ? displayData
     : displayData.filter(request => request.status === filterStatus);
 
   if (loading && !travelRequests.length) {
@@ -212,7 +203,7 @@ const Travel = () => {
         />
       )}
       {viewingRequest && (
-        <TravelDetail 
+        <TravelDetail
           travelRequest={viewingRequest}
           onClose={handleCloseDetails}
         />
@@ -239,104 +230,16 @@ const Travel = () => {
         </div>
       </div>
 
-      <div className="bg-white shadow-md rounded-lg overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-2 py-1 text-left text-xxs font-medium text-gray-500 uppercase tracking-wider">
-                Employee
-              </th>
-              <th className="px-2 py-1 text-left text-xxs font-medium text-gray-500 uppercase tracking-wider">
-                Destination
-              </th>
-              <th className="px-2 py-1 text-left text-xxs font-medium text-gray-500 uppercase tracking-wider">
-                Purpose
-              </th>
-              <th className="px-2 py-1 text-left text-xxs font-medium text-gray-500 uppercase tracking-wider">
-                Dates
-              </th>
-              <th className="px-2 py-1 text-left text-xxs font-medium text-gray-500 uppercase tracking-wider">
-                Est. Cost
-              </th>
-              <th className="px-2 py-1 text-left text-xxs font-medium text-gray-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-2 py-1 text-right text-xxs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {filteredRequests.map((request) => (
-              <tr key={request.id} className="hover:bg-gray-50">
-                <td className="px-2 py-1 whitespace-nowrap">
-                  <div className="text-xs font-medium text-gray-900">
-                    {request.employeeName}
-                  </div>
-                  <div className="text-xxs text-gray-500">ID: {request.employeeId}</div>
-                </td>
-                <td className="px-2 py-1 whitespace-nowrap">
-                  <div className="text-xs text-gray-900">{request.destination}</div>
-                </td>
-                <td className="px-2 py-1 whitespace-nowrap">
-                  <div className="text-xs text-gray-900">{request.purpose}</div>
-                </td>
-                <td className="px-2 py-1 whitespace-nowrap">
-                  <div className="text-xs text-gray-900">
-                    {new Date(request.departureDate || request.startDate).toLocaleDateString()} - {new Date(request.returnDate || request.endDate).toLocaleDateString()}
-                  </div>
-                </td>
-                <td className="px-2 py-1 whitespace-nowrap">
-                  <div className="text-xs text-gray-900">${request.estimatedCost.toLocaleString()}</div>
-                </td>
-                <td className="px-2 py-1 whitespace-nowrap">
-                  <span
-                    className={`px-1 inline-flex text-xxs leading-4 font-semibold rounded-full ${
-                      request.status === 'approved'
-                        ? 'bg-green-100 text-green-800'
-                        : request.status === 'rejected'
-                        ? 'bg-red-100 text-red-800'
-                        : 'bg-yellow-100 text-yellow-800'
-                    }`}
-                  >
-                    {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
-                  </span>
-                </td>
-                <td className="px-2 py-1 whitespace-nowrap text-right text-xs font-medium">
-                  <button
-                    onClick={() => handleViewDetails(request)}
-                    className="px-3 py-1 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-medium"
-                  >
-                    View
-                  </button>
-                  {request.status === 'pending' && (
-                    <>
-                      <button
-                        onClick={() => handleEditRequest(request)}
-                        className="px-3 py-1 text-xs bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors font-medium"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleApprove(request.id)}
-                        className="text-green-600 hover:text-green-900 mr-1"
-                      >
-                        Approve
-                      </button>
-                      <button
-                        onClick={() => handleReject(request.id)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        Reject
-                      </button>
-                    </>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <TravelList
+        travels={filteredRequests}
+        onView={handleViewDetails}
+        onEdit={handleEditRequest}
+        onDelete={(request) =>
+          setTravelRequests(travelRequests.filter(r => r.id !== request.id))
+        }
+        onApprove={handleApprove}
+        onReject={handleReject}
+      />
     </div>
   );
 };

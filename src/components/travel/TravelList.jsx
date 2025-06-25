@@ -1,7 +1,8 @@
+
 import React from 'react';
 import { formatDate } from '../../utils/formatUtils';
 
-const TravelList = ({ travels, onView, onEdit, onDelete }) => {
+const TravelList = ({ travels, onView, onEdit, onDelete, onApprove, onReject }) => {
   return (
     <div className="overflow-x-auto">
       <table className="w-full divide-y divide-gray-200">
@@ -29,29 +30,27 @@ const TravelList = ({ travels, onView, onEdit, onDelete }) => {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {travels?.map((travel, index) => (
-            <tr key={travel.id} className={`hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}>
+            <tr
+              key={travel.id}
+              className={`hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}
+            >
               <td className="px-4 py-4 whitespace-nowrap">
                 <div className="flex items-center">
-                  <div className="flex-shrink-0 h-10 w-10">
-                   <img className="h-10 w-10 rounded-full" src={'https://via.placeholder.com/40'} alt={travel.employeeName}/>
-                  </div>
- 
-                   <div className="ml-4">
-      <div className="text-sm font-medium text-gray-900">
-        {travel.employeeName}
-      </div>
-      <div className="text-sm text-gray-500">
-        ID: {travel.employeeId}
-      </div>
-    </div>
-                  {/* <div className="ml-4">
+                    {/* <div className="flex-shrink-0 h-10 w-10">
+                      <img
+                        className="h-10 w-10 rounded-full"
+                        src={'https://via.placeholder.com/40'}
+                        alt={travel.employeeName}
+                      />
+                    </div> */}
+                  <div className="ml-4">
                     <div className="text-sm font-medium text-gray-900">
-                      {travel.employee.name}
+                      {travel.employeeName}
                     </div>
                     <div className="text-sm text-gray-500">
-                      {travel.employee.position}
+                      ID: {travel.employeeId}
                     </div>
-                  </div> */}
+                  </div>
                 </div>
               </td>
               <td className="px-4 py-4 whitespace-nowrap">
@@ -67,23 +66,21 @@ const TravelList = ({ travels, onView, onEdit, onDelete }) => {
               </td>
               <td className="px-4 py-4 whitespace-nowrap">
                 <span
-                  className={`inline-flex items-center px-3 py-1 text-xs font-medium rounded-full border ${
+                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                     travel.status === 'approved'
-                      ? 'bg-green-100 text-green-800 border-green-200'
+                      ? 'bg-green-100 text-green-800'
                       : travel.status === 'pending'
-                      ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                      ? 'bg-yellow-100 text-yellow-800'
                       : travel.status === 'rejected'
-                      ? 'bg-red-100 text-red-800 border-red-200'
+                      ? 'bg-red-100 text-red-800'
                       : 'bg-gray-100 text-gray-800 border-gray-200'
                   }`}
                 >
-                  {travel.status}
+                  {travel.status.charAt(0).toUpperCase() + travel.status.slice(1)}
                 </span>
               </td>
               <td className="px-4 py-4 whitespace-nowrap text-right">
-                    
                 <div className="flex justify-end space-x-2">
-          <button className="px-3 py-1 text-xs bg-blue-500 text-white border border-black">Test</button>
                   <button
                     onClick={() => onView(travel)}
                     className="px-3 py-1 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-medium"
@@ -102,6 +99,22 @@ const TravelList = ({ travels, onView, onEdit, onDelete }) => {
                   >
                     Delete
                   </button>
+                  {travel.status === 'pending' && (
+                    <>
+                      <button
+                        onClick={() => onApprove(travel)}
+                        className="px-3 py-1 text-xs bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors font-medium"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => onReject(travel)}
+                        className="px-3 py-1 text-xs bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-100 transition-colors font-medium"
+                      >
+                        Reject
+                      </button>
+                    </>
+                  )}
                 </div>
               </td>
             </tr>
@@ -112,4 +125,4 @@ const TravelList = ({ travels, onView, onEdit, onDelete }) => {
   );
 };
 
-export default TravelList; 
+export default TravelList;

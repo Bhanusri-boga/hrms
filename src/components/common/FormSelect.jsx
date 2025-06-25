@@ -14,7 +14,7 @@ const FormSelect = forwardRef(({
   ...props
 }, ref) => {
   const selectClasses = `
-    block w-full rounded-md shadow-sm
+    block w-full rounded-md shadow-sm appearance-none
     ${error
       ? 'border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500'
       : 'border-gray-300 dark:border-gray-600 focus:border-primary-500 focus:ring-primary-500'

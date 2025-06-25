@@ -22,7 +22,7 @@ const EmployeeDetail = ({ employee, onClose, onEdit }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 max-h-[60vh] overflow-y-auto">
+        <div className="grid grid-cols-2 gap-4">
           <div><strong>Employee ID:</strong> {employee.employeeId}</div>
           <div><strong>First Name:</strong> {employee.firstName}</div>
           <div><strong>Middle Name:</strong> {employee.middleName}</div>

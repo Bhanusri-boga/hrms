@@ -90,7 +90,7 @@ const Modal = ({
               </div>
 
               {/* Content */}
-              <div className="flex-1 overflow-y-auto">
+              <div className="flex-1 overflow-y-auto overflow-x-hidden">
                 <div className="p-4 bg-white dark:bg-gray-800">
                   {children}
                 </div>

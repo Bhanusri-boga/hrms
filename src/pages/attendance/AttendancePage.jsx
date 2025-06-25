@@ -3,11 +3,16 @@ import { attendanceService } from '../../api';
 import { useNotification } from '../../context/NotificationContext';
 import GlassCard from '../../components/common/GlassCard';
 import Loader from '../../components/common/Loader';
+import AttendanceList from '../../components/attendance/AttendanceList';
+import AttendanceForm from '../../components/attendance/AttendanceForm';
 
 const AttendancePage = () => {
   const [attendance, setAttendance] = useState([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedAttendance, setSelectedAttendance] = useState(null);
+  const [isEditMode, setIsEditMode] = useState(false);
   const { addNotification } = useNotification();
 
   const fetchAttendance = useCallback(async () => {
@@ -35,24 +40,30 @@ const AttendancePage = () => {
     fetchStats();
   }, [fetchAttendance, fetchStats]);
 
-  const handleMarkAttendance = async (employeeId, status) => {
-    try {
-      const now = new Date();
-      const inTime = now.toISOString();
-      const outTime = null; // or set as needed
-      const note = '';
-      await attendanceService.markAttendance({
-        employeeId,
-        inTime,
-        outTime,
-        note,
-        status: status.toUpperCase()
-      });
-      addNotification('success', 'Attendance marked successfully');
-      await Promise.all([fetchAttendance(), fetchStats()]);
-    } catch (error) {
-      addNotification('error', 'Failed to mark attendance');
-    }
+  const handleEdit = (record) => {
+    setSelectedAttendance(record);
+    setIsEditMode(true);
+    setShowModal(true);
+  };
+  const handleView = (record) => {
+    setSelectedAttendance(record);
+    setIsEditMode(false);
+    setShowModal(true);
+  };
+  const handleDelete = async () => {
+    addNotification('info', 'Delete not implemented');
+  };
+  const handleModalClose = () => {
+    setShowModal(false);
+    setSelectedAttendance(null);
+    setIsEditMode(false);
+  };
+  const handleModalSubmit = async () => {
+    addNotification('success', 'Attendance updated');
+    setShowModal(false);
+    setSelectedAttendance(null);
+    setIsEditMode(false);
+    fetchAttendance();
   };
 
   if (loading) {
@@ -60,103 +71,88 @@ const AttendancePage = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Attendance Management</h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <GlassCard>
-          <h3 className="text-lg font-semibold mb-2">Present Today</h3>
-          <p className="text-3xl font-bold text-green-600">{stats?.present || 0}</p>
-        </GlassCard>
-
-        <GlassCard>
-          <h3 className="text-lg font-semibold mb-2">Absent Today</h3>
-          <p className="text-3xl font-bold text-red-600">{stats?.absent || 0}</p>
-        </GlassCard>
-
-        <GlassCard>
-          <h3 className="text-lg font-semibold mb-2">On Leave</h3>
-          <p className="text-3xl font-bold text-yellow-600">{stats?.onLeave || 0}</p>
-        </GlassCard>
+    <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
+      {/* Header Section */}
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Attendance Management</h1>
+            <p className="text-gray-600">Track and manage employee attendance records</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <button className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl font-medium flex items-center gap-2">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Mark Attendance
+            </button>
+          </div>
+        </div>
       </div>
 
-      <GlassCard>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead>
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Employee
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  In Time
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Out Time
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Note
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {attendance.map((record) => (
-                <tr key={record.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">
-                      {record.employeeName}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {record.inTime ? new Date(record.inTime).toLocaleString() : '-'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {record.outTime ? new Date(record.outTime).toLocaleString() : '-'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {record.note || '-'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        record.status === 'PRESENT'
-                          ? 'bg-green-100 text-green-800'
-                          : record.status === 'ABSENT'
-                          ? 'bg-red-100 text-red-800'
-                          : record.status === 'LATE'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-gray-100 text-gray-800'
-                      }`}
-                    >
-                      {record.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button
-                      onClick={() => handleMarkAttendance(record.employeeId, 'PRESENT')}
-                      className="text-green-600 hover:text-green-900 mr-4"
-                    >
-                      Mark Present
-                    </button>
-                    <button
-                      onClick={() => handleMarkAttendance(record.employeeId, 'ABSENT')}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Mark Absent
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {/* Stats Section */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+          <div className="flex items-center">
+            <div className="p-3 bg-gradient-to-r from-green-500 to-green-600 rounded-lg text-white">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div className="ml-4">
+              <h3 className="text-sm font-medium text-gray-600">Present Today</h3>
+              <p className="text-2xl font-bold text-gray-900">{stats?.present || 0}</p>
+            </div>
+          </div>
         </div>
-      </GlassCard>
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+          <div className="flex items-center">
+            <div className="p-3 bg-gradient-to-r from-red-500 to-red-600 rounded-lg text-white">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div className="ml-4">
+              <h3 className="text-sm font-medium text-gray-600">Absent Today</h3>
+              <p className="text-2xl font-bold text-gray-900">{stats?.absent || 0}</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+          <div className="flex items-center">
+            <div className="p-3 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg text-white">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div className="ml-4">
+              <h3 className="text-sm font-medium text-gray-600">On Leave</h3>
+              <p className="text-2xl font-bold text-gray-900">{stats?.onLeave || 0}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Attendance Table */}
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="overflow-x-auto">
+          <AttendanceList
+            attendance={attendance}
+            onEdit={handleEdit}
+            onView={handleView}
+            onDelete={handleDelete}
+          />
+        </div>
+      </div>
+      {showModal && (
+        <AttendanceForm
+          attendance={selectedAttendance}
+          employees={[]}
+          onSubmit={handleModalSubmit}
+          onClose={handleModalClose}
+          readOnly={!isEditMode}
+        />
+      )}
     </div>
   );
 };

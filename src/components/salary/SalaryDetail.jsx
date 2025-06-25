@@ -1,114 +1,154 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { formatDate, formatCurrency } from '../../utils/formatUtils';
-import Modal from '../common/Modal';
 
-const SalaryDetail = ({ salary, onClose, onEdit }) => {
+const SalaryDetail = ({ salary, onClose, onEdit, onSave, onApprove, onReject, isEditMode }) => {
+  const [form, setForm] = useState(salary);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSave = () => {
+    onSave(form);
+  };
+
   if (!salary) return null;
 
   return (
-    <Modal title="Salary Details" onClose={onClose}>
-      <div className="space-y-6">
-        <div className="flex items-center space-x-4">
-          <img
-            src={salary.employee.avatar || 'https://via.placeholder.com/100'}
-            alt={salary.employee.name}
-            className="h-24 w-24 rounded-full"
-          />
-          <div>
-            <h3 className="text-lg font-medium text-gray-900">
-              {salary.employee.name}
-            </h3>
-            <p className="text-sm text-gray-500">{salary.employee.position}</p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative flex flex-col max-h-[90vh]">
+        <button
+          className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+          onClick={onClose}
+        >
+          ×
+        </button>
+        <h2 className="text-lg font-bold mb-4">{isEditMode ? 'Edit Salary' : 'Salary Details'}</h2>
+        <div className="flex-1 overflow-y-auto pr-2">
+          <div className="mb-2">
+            <span className="font-semibold">Employee ID:</span>{' '}
+            {isEditMode ? (
+              <input name="employeeId" value={form.employeeId} onChange={handleChange} className="border rounded px-2 py-1 w-full" />
+            ) : (
+              salary.employeeId
+            )}
           </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <h4 className="text-sm font-medium text-gray-500">Month</h4>
-            <p className="mt-1 text-sm text-gray-900">
-              {formatDate(salary.month, 'MMMM yyyy')}
-            </p>
+          <div className="mb-2">
+            <span className="font-semibold">Pay Period:</span>{' '}
+            {isEditMode ? (
+              <>
+                <input type="date" name="payPeriodStart" value={form.payPeriodStart} onChange={handleChange} className="border rounded px-2 py-1 mr-2" />
+                to
+                <input type="date" name="payPeriodEnd" value={form.payPeriodEnd} onChange={handleChange} className="border rounded px-2 py-1 ml-2" />
+              </>
+            ) : (
+              <>{formatDate(salary.payPeriodStart)} - {formatDate(salary.payPeriodEnd)}</>
+            )}
           </div>
-
-          <div>
-            <h4 className="text-sm font-medium text-gray-500">Status</h4>
-            <p className="mt-1">
-              <span
-                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  salary.status === 'paid'
-                    ? 'bg-green-100 text-green-800'
-                    : salary.status === 'pending'
-                    ? 'bg-yellow-100 text-yellow-800'
-                    : 'bg-red-100 text-red-800'
-                }`}
-              >
-                {salary.status}
-              </span>
-            </p>
+          <div className="mb-2">
+            <span className="font-semibold">Basic Salary:</span>{' '}
+            {isEditMode ? (
+              <input name="basicSalary" type="number" value={form.basicSalary} onChange={handleChange} className="border rounded px-2 py-1 w-full" />
+            ) : (
+              formatCurrency(salary.basicSalary)
+            )}
           </div>
-        </div>
-
-        <div className="border-t border-gray-200 pt-4">
-          <h4 className="text-sm font-medium text-gray-500 mb-4">Salary Breakdown</h4>
-          <div className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Basic Salary</span>
-              <span className="text-sm font-medium text-gray-900">
-                {formatCurrency(salary.basicSalary)}
-              </span>
+          <div className="mb-2">
+            <span className="font-semibold">Allowances:</span>{' '}
+            {isEditMode ? (
+              <input name="allowances" type="number" value={form.allowances} onChange={handleChange} className="border rounded px-2 py-1 w-full" />
+            ) : (
+              formatCurrency(salary.allowances)
+            )}
+          </div>
+          <div className="mb-2">
+            <span className="font-semibold">Deductions:</span>{' '}
+            {isEditMode ? (
+              <input name="deductions" type="number" value={form.deductions} onChange={handleChange} className="border rounded px-2 py-1 w-full" />
+            ) : (
+              formatCurrency(salary.deductions)
+            )}
+          </div>
+          <div className="mb-2">
+            <span className="font-semibold">Net Salary:</span>{' '}
+            {formatCurrency((form.basicSalary || 0) + (form.allowances || 0) - (form.deductions || 0))}
+          </div>
+          <div className="mb-2">
+            <span className="font-semibold">Payment Date:</span>{' '}
+            {isEditMode ? (
+              <input name="paymentDate" type="date" value={form.paymentDate} onChange={handleChange} className="border rounded px-2 py-1 w-full" />
+            ) : (
+              formatDate(salary.paymentDate)
+            )}
+          </div>
+          <div className="mb-2">
+            <span className="font-semibold">Status:</span>{' '}
+            <span className={`inline-flex items-center px-3 py-1 text-xs font-medium rounded-full ${
+              salary.status === 'approved'
+                ? 'bg-green-100 text-green-800 border border-green-200'
+                : salary.status === 'rejected'
+                ? 'bg-red-100 text-red-800 border border-red-200'
+                : 'bg-yellow-100 text-yellow-800 border border-yellow-200'
+            }`}>
+              {salary.status ? salary.status.charAt(0).toUpperCase() + salary.status.slice(1) : 'Pending'}
+            </span>
+          </div>
+          {isEditMode ? (
+            <div className="mb-2">
+              <span className="font-semibold">Comments:</span>{' '}
+              <input name="comments" value={form.comments} onChange={handleChange} className="border rounded px-2 py-1 w-full" />
             </div>
-
-            <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Allowances</span>
-              <span className="text-sm font-medium text-gray-900">
-                {formatCurrency(salary.allowances)}
-              </span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Deductions</span>
-              <span className="text-sm font-medium text-red-600">
-                -{formatCurrency(salary.deductions)}
-              </span>
-            </div>
-
-            <div className="border-t border-gray-200 pt-3">
-              <div className="flex justify-between">
-                <span className="text-sm font-medium text-gray-900">Net Salary</span>
-                <span className="text-sm font-medium text-gray-900">
-                  {formatCurrency(salary.netSalary)}
-                </span>
+          ) : (
+            salary.comments && (
+              <div className="mb-2">
+                <span className="font-semibold">Comments:</span>{' '}
+                {salary.comments}
               </div>
-            </div>
-          </div>
+            )
+          )}
         </div>
-
-        {salary.notes && (
-          <div className="border-t border-gray-200 pt-4">
-            <h4 className="text-sm font-medium text-gray-500 mb-2">Notes</h4>
-            <p className="text-sm text-gray-600">{salary.notes}</p>
-          </div>
-        )}
-
-        <div className="flex justify-end space-x-3 mt-6">
+        <div className="flex justify-end mt-4 space-x-2">
+          {!isEditMode && (
+            <>
+              <button
+                className="px-3 py-1 text-xs bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors font-medium"
+                onClick={() => onApprove && onApprove(salary)}
+              >
+                Approve
+              </button>
+              <button
+                className="px-3 py-1 text-xs bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-100 transition-colors font-medium"
+                onClick={() => onReject && onReject(salary)}
+              >
+                Reject
+              </button>
+              <button
+                className="px-3 py-1 text-xs bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors font-medium"
+                onClick={onEdit}
+              >
+                Edit
+              </button>
+            </>
+          )}
+          {isEditMode && (
+            <button
+              className="px-3 py-1 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-medium"
+              onClick={handleSave}
+            >
+              Save
+            </button>
+          )}
           <button
-            type="button"
+            className="px-3 py-1 text-xs bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
             onClick={onClose}
-            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
           >
             Close
           </button>
-          <button
-            type="button"
-            onClick={onEdit}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            Edit
-          </button>
         </div>
       </div>
-    </Modal>
+    </div>
   );
 };
 
-export default SalaryDetail; 
+export default SalaryDetail;
