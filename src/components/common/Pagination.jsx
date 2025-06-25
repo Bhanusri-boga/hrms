@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 
 const Pagination = ({
   currentPage,
@@ -51,17 +50,15 @@ const Pagination = ({
         <button
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
-          className="relative inline-flex items-center px-2 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-secondary mx-1"
         >
-          <span className="sr-only">First</span>
           «
         </button>
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="relative inline-flex items-center px-2 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-secondary mx-1"
         >
-          <span className="sr-only">Previous</span>
           ‹
         </button>
 
@@ -69,7 +66,7 @@ const Pagination = ({
           <>
             <button
               onClick={() => onPageChange(1)}
-              className="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+              className="btn-secondary mx-1"
             >
               1
             </button>
@@ -78,19 +75,17 @@ const Pagination = ({
         )}
 
         {pageNumbers.map((number) => (
-          <motion.button
+          <button
             key={number}
             onClick={() => onPageChange(number)}
-            className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+            className={`btn-secondary mx-1 ${
               currentPage === number
                 ? 'z-10 bg-primary-50 dark:bg-primary-900 border-primary-500 text-primary-600 dark:text-primary-400'
                 : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
             }`}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
           >
             {number}
-          </motion.button>
+          </button>
         ))}
 
         {endPage < totalPages && (
@@ -98,7 +93,7 @@ const Pagination = ({
             {endPage < totalPages - 1 && <span className="text-gray-500">...</span>}
             <button
               onClick={() => onPageChange(totalPages)}
-              className="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+              className="btn-secondary mx-1"
             >
               {totalPages}
             </button>
@@ -108,17 +103,15 @@ const Pagination = ({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="relative inline-flex items-center px-2 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-secondary mx-1"
         >
-          <span className="sr-only">Next</span>
           ›
         </button>
         <button
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
-          className="relative inline-flex items-center px-2 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-secondary mx-1"
         >
-          <span className="sr-only">Last</span>
           »
         </button>
       </nav>

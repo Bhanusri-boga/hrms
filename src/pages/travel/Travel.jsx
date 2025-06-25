@@ -1,66 +1,15 @@
 import React, { useState } from 'react';
 import { useFetch } from '../../hooks/useFetch';
 import { useNotification } from '../../context/NotificationContext';
+import TravelForm from '../../components/travel/TravelForm';
+import TravelDetail from '../../components/travel/TravelDetail';
 
 const Travel = () => {
   const [filterStatus, setFilterStatus] = useState('all');
-  const { addNotification } = useNotification();
-  
-  // Fetch travel requests data
-  const { data: travelData, loading, refetch } = useFetch(`/travel-requests?status=${filterStatus}`);
-
-  const handleStatusChange = (e) => {
-    setFilterStatus(e.target.value);
-  };
-
-  // eslint-disable-next-line no-unused-vars
-  const handleApprove = async (requestId) => {
-    try {
-      // This would be an API call to approve travel request
-      // await approveTravelRequest(requestId);
-      
-      addNotification({
-        type: 'success',
-        message: 'Travel request approved successfully'
-      });
-      refetch();
-    } catch (error) {
-      addNotification({
-        type: 'error',
-        message: error.message || 'Failed to approve travel request'
-      });
-    }
-  };
-
-  // eslint-disable-next-line no-unused-vars
-  const handleReject = async (requestId) => {
-    try {
-      // This would be an API call to reject travel request
-      // await rejectTravelRequest(requestId);
-      
-      addNotification({
-        type: 'success',
-        message: 'Travel request rejected'
-      });
-      refetch();
-    } catch (error) {
-      addNotification({
-        type: 'error',
-        message: error.message || 'Failed to reject travel request'
-      });
-    }
-  };
-
-  const handleNewRequest = () => {
-    // This would open a form to create a new travel request
-    addNotification({
-      type: 'info',
-      message: 'New travel request form would open here'
-    });
-  };
-
-  // Mock data for demonstration
-  const mockTravelData = [
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [viewingRequest, setViewingRequest] = useState(null);
+  const [editingRequest, setEditingRequest] = useState(null);
+  const [travelRequests, setTravelRequests] = useState([
     { 
       id: 1, 
       employeeId: 101, 
@@ -109,22 +58,165 @@ const Travel = () => {
       status: 'pending',
       notes: 'Initial meeting with the client team for project kickoff'
     },
-  ];
+  ]);
+  
+  const { addNotification } = useNotification();
+  
+  // Fetch travel requests data
+  const { data: travelData, loading } = useFetch(`/travel-requests?status=${filterStatus}`);
 
-  // Use mock data for now
-  const displayData = travelData || mockTravelData;
+  const handleStatusChange = (e) => {
+    setFilterStatus(e.target.value);
+  };
+
+  const handleNewRequest = () => {
+    setEditingRequest(null);
+    setIsFormOpen(true);
+  };
+
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    setEditingRequest(null);
+  };
+
+  const handleViewDetails = (request) => {
+    setViewingRequest(request);
+  };
+
+  const handleCloseDetails = () => {
+    setViewingRequest(null);
+  };
+
+  const handleEditRequest = (request) => {
+    setEditingRequest(request);
+    setIsFormOpen(true);
+    setViewingRequest(null);
+  };
+
+  const handleSubmitRequest = async (id, formData) => {
+    try {
+      if (id) {
+        // This would be an API call to update travel request
+        // const response = await updateTravelRequest(id, formData);
+        console.log('Updating travel request:', id, formData);
+        
+        // For mock data: Update the request in local state
+        setTravelRequests(travelRequests.map(request => 
+          request.id === id
+            ? {
+                ...request,
+                ...formData,
+                departureDate: formData.startDate,
+                returnDate: formData.endDate,
+                notes: formData.comments
+              }
+            : request
+        ));
+      } else {
+        // This would be an API call to create travel request
+        // const response = await createTravelRequest(formData);
+        console.log('Submitting new travel request:', formData);
+        
+        // For mock data: Add the new request to the local state
+        const newRequest = {
+          id: travelRequests.length + 1,
+          employeeId: formData.employeeId,
+          employeeName: 'Current User', // This would come from your auth context in real app
+          destination: formData.destination,
+          purpose: formData.purpose,
+          departureDate: formData.startDate,
+          returnDate: formData.endDate,
+          estimatedCost: formData.estimatedCost,
+          status: 'pending',
+          notes: formData.comments
+        };
+
+        setTravelRequests([...travelRequests, newRequest]);
+      }
+      
+      addNotification({
+        type: 'success',
+        message: id ? 'Travel request updated successfully' : 'Travel request submitted successfully'
+      });
+      setIsFormOpen(false);
+      setEditingRequest(null);
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        message: error.message || 'Failed to submit travel request'
+      });
+    }
+  };
+
+  const handleApprove = async (requestId) => {
+    try {
+      // Update the status in local state for mock data
+      setTravelRequests(travelRequests.map(request => 
+        request.id === requestId 
+          ? { ...request, status: 'approved' }
+          : request
+      ));
+      
+      addNotification({
+        type: 'success',
+        message: 'Travel request approved successfully'
+      });
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        message: error.message || 'Failed to approve travel request'
+      });
+    }
+  };
+
+  const handleReject = async (requestId) => {
+    try {
+      // Update the status in local state for mock data
+      setTravelRequests(travelRequests.map(request => 
+        request.id === requestId 
+          ? { ...request, status: 'rejected' }
+          : request
+      ));
+      
+      addNotification({
+        type: 'success',
+        message: 'Travel request rejected'
+      });
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        message: error.message || 'Failed to reject travel request'
+      });
+    }
+  };
+
+  // Use local state for mock data instead of API data
+  const displayData = travelData || travelRequests;
 
   // Filter travel requests based on selected status
   const filteredRequests = filterStatus === 'all' 
     ? displayData 
     : displayData.filter(request => request.status === filterStatus);
 
-  if (loading) {
+  if (loading && !travelRequests.length) {
     return <div className="flex justify-center items-center h-full">Loading...</div>;
   }
 
   return (
     <div className="container mx-auto px-2 py-2">
+      {isFormOpen && (
+        <TravelForm
+          travel={editingRequest}
+          onSubmit={handleSubmitRequest}
+          onClose={handleCloseForm}
+        />
+      )}
+      {viewingRequest && (
+        <TravelDetail 
+          travelRequest={viewingRequest}
+          onClose={handleCloseDetails}
+        />
+      )}
       <div className="flex justify-between items-center mb-2">
         <h1 className="text-base font-bold text-gray-900">Travel Requests</h1>
         <div className="flex items-center">
@@ -191,7 +283,7 @@ const Travel = () => {
                 </td>
                 <td className="px-2 py-1 whitespace-nowrap">
                   <div className="text-xs text-gray-900">
-                    {new Date(request.departureDate).toLocaleDateString()} - {new Date(request.returnDate).toLocaleDateString()}
+                    {new Date(request.departureDate || request.startDate).toLocaleDateString()} - {new Date(request.returnDate || request.endDate).toLocaleDateString()}
                   </div>
                 </td>
                 <td className="px-2 py-1 whitespace-nowrap">
@@ -212,13 +304,19 @@ const Travel = () => {
                 </td>
                 <td className="px-2 py-1 whitespace-nowrap text-right text-xs font-medium">
                   <button
-                    onClick={() => {/* View details */}}
-                    className="text-blue-600 hover:text-blue-900 mr-1"
+                    onClick={() => handleViewDetails(request)}
+                    className="px-3 py-1 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-medium"
                   >
                     View
                   </button>
                   {request.status === 'pending' && (
                     <>
+                      <button
+                        onClick={() => handleEditRequest(request)}
+                        className="px-3 py-1 text-xs bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors font-medium"
+                      >
+                        Edit
+                      </button>
                       <button
                         onClick={() => handleApprove(request.id)}
                         className="text-green-600 hover:text-green-900 mr-1"

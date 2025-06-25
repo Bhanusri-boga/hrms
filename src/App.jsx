@@ -1,4 +1,8 @@
 import React from 'react';
+
+
+
+
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
 import PrivateRoute from './routes/PrivateRoute';
@@ -8,7 +12,6 @@ import Dashboard from './pages/Dashboard';
 import Users from './pages/Users';
 import Employees from './pages/Employees';
 import AttendancePage from './pages/attendance/AttendancePage';
-import TimeSheetsPage from './pages/timesheets/TimeSheetsPage';
 import DocumentsPage from './pages/documents/DocumentsPage';
 import Salary from './pages/salary/Salary';
 import Travel from './pages/travel/Travel';
@@ -20,6 +23,7 @@ import Attendance from './pages/attendance/Attendance';
 import TimeSheets from './pages/TimeSheets';
 import Documents from './pages/documents/Documents';
 import Profile from './pages/profile/Profile';
+import LeaveRequestsPage from './pages/LeaveRequestsPage';
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -43,6 +47,8 @@ function App() {
           <Route path="/reports" element={<Reports />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/leave" element={<LeaveRequestsPage />} />
+          <Route path="/leave/requests" element={<LeaveRequestsPage />} />
         </Route>
       </Route>
 

@@ -57,75 +57,77 @@ const FormInput = forwardRef(({
 
   return (
     <div className={`${className} relative pt-6`}>
-      <motion.div
-        className="relative"
-        style={glowAnimation}
-      >
-        {label && (
-          <motion.label
-            htmlFor={name}
-            className="absolute left-4 font-medium transition-all duration-200 pointer-events-none"
-            initial="blurred"
-            animate={isFocused ? "focused" : "blurred"}
-            variants={labelVariants}
-          >
-            {label}
-            {required && <span className="text-red-500 ml-1">*</span>}
-          </motion.label>
-        )}
-        <div className="relative">
-          <input
-            ref={ref}
-            type={type}
-            name={name}
-            id={name}
-            disabled={disabled}
-            className={inputClasses}
-            aria-invalid={error ? 'true' : 'false'}
-            aria-describedby={error ? `${name}-error` : undefined}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            {...props}
-          />
-          <AnimatePresence>
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
-              >
-                <svg
-                  className="h-5 w-5 text-red-500"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  aria-hidden="true"
+      <div className="mb-4 card">
+        <motion.div
+          className="relative"
+          style={glowAnimation}
+        >
+          {label && (
+            <motion.label
+              htmlFor={name}
+              className="absolute left-4 font-medium transition-all duration-200 pointer-events-none"
+              initial="blurred"
+              animate={isFocused ? "focused" : "blurred"}
+              variants={labelVariants}
+            >
+              {label}
+              {required && <span className="text-red-500 ml-1">*</span>}
+            </motion.label>
+          )}
+          <div className="relative">
+            <input
+              ref={ref}
+              type={type}
+              name={name}
+              id={name}
+              disabled={disabled}
+              className={inputClasses}
+              aria-invalid={error ? 'true' : 'false'}
+              aria-describedby={error ? `${name}-error` : undefined}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              {...props}
+            />
+            <AnimatePresence>
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </motion.div>
-      <AnimatePresence>
-        {error && (
-          <motion.p
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="mt-2 text-sm text-red-500 font-medium"
-            id={`${name}-error`}
-          >
-            {error}
-          </motion.p>
-        )}
-      </AnimatePresence>
+                  <svg
+                    className="h-5 w-5 text-red-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+        <AnimatePresence>
+          {error && (
+            <motion.p
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="mt-2 text-sm text-red-500 font-medium"
+              id={`${name}-error`}
+            >
+              {error}
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 });

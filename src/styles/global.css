@@ -100,11 +100,11 @@
   }
 
   .btn-primary {
-    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+    @apply bg-red-500 text-white rounded-md px-4 py-2 font-semibold hover:bg-red-600 transition;
   }
 
   .btn-secondary {
-    @apply bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-primary-500;
+    @apply bg-gray-100 text-gray-700 rounded-md px-4 py-2 font-semibold hover:bg-gray-200 transition;
   }
 
   /* Input field base styles */
@@ -113,7 +113,7 @@
   }
 
   .card {
-    @apply bg-white rounded-lg shadow-sm p-6;
+    @apply bg-white rounded-xl shadow-md p-6 mb-6 flex flex-col justify-between;
   }
 }
 
@@ -151,4 +151,19 @@
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
   }
+}
+
+/* Section headings */
+.section-title {
+  @apply text-2xl font-bold mb-4 text-gray-900;
+}
+
+/* Feature grid */
+.feature-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6;
+}
+
+/* Soft background for main area */
+.main-bg {
+  @apply bg-gray-50 min-h-screen;
 }

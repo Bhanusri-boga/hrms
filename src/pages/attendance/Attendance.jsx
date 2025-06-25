@@ -66,13 +66,17 @@ const Attendance = () => {
 
   const handleMarkAttendance = async (employeeId, status) => {
     try {
+      const now = new Date();
+      const inTime = now.toISOString();
+      const outTime = null; // or set as needed
+      const note = '';
       const response = await attendanceService.markAttendance({
         employeeId,
-        date: selectedDate,
-        status,
-        timestamp: new Date().toISOString()
+        inTime,
+        outTime,
+        note,
+        status: status.toUpperCase()
       });
-      
       if (response?.data) {
         addNotification({
           type: 'success',
@@ -137,13 +141,16 @@ const Attendance = () => {
                     Employee
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    In Time
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Out Time
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Note
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Check In
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Check Out
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Actions
@@ -156,30 +163,33 @@ const Attendance = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900 dark:text-white">{record.employeeName}</div>
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      {record.inTime ? new Date(record.inTime).toLocaleString() : '-'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      {record.outTime ? new Date(record.outTime).toLocaleString() : '-'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      {record.note || '-'}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                        ${record.status === 'present' ? 'bg-green-100 text-green-800' : 
-                          record.status === 'absent' ? 'bg-red-100 text-red-800' : 
-                          record.status === 'late' ? 'bg-yellow-100 text-yellow-800' : 
+                        ${record.status === 'PRESENT' ? 'bg-green-100 text-green-800' : 
+                          record.status === 'ABSENT' ? 'bg-red-100 text-red-800' : 
+                          record.status === 'LATE' ? 'bg-yellow-100 text-yellow-800' : 
                           'bg-gray-100 text-gray-800'}`}>
-                        {record.status === 'not_marked' ? 'Not Marked' : record.status}
+                        {record.status}
                       </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {record.checkIn || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {record.checkOut || '-'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button
-                        onClick={() => handleMarkAttendance(record.employeeId, 'present')}
+                        onClick={() => handleMarkAttendance(record.employeeId, 'PRESENT')}
                         className="text-green-600 hover:text-green-900 mr-4"
                       >
                         Present
                       </button>
                       <button
-                        onClick={() => handleMarkAttendance(record.employeeId, 'absent')}
+                        onClick={() => handleMarkAttendance(record.employeeId, 'ABSENT')}
                         className="text-red-600 hover:text-red-900"
                       >
                         Absent

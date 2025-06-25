@@ -76,7 +76,7 @@ const DocumentUpload = ({ onUpload, onClose }) => {
   ];
 
   return (
-    <Modal title="Upload Document" onClose={onClose}>
+    <Modal title="Upload Document" onClose={onClose} isOpen={true}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div
           {...getRootProps()}

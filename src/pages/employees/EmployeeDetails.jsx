@@ -3,6 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useNotification } from '../../context/NotificationContext';
 import { getEmployeeById, updateEmployee, deleteEmployee } from '../../api/employeeApi';
 
+// Example options (replace with your actual data or fetch from API)
+const positions = ["Manager", "Developer", "Designer", "HR", "Accountant"];
+const departments = ["Engineering", "Design", "HR", "Finance", "Sales"];
+
 const EmployeeDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -173,25 +177,33 @@ const EmployeeDetails = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Position
                   </label>
-                  <input
-                    type="text"
+                  <select
                     name="position"
                     value={formData.position || ''}
                     onChange={handleInputChange}
                     className="w-full p-2 border border-gray-300 rounded"
-                  />
+                  >
+                    <option value="">Select Position</option>
+                    {positions.map((pos) => (
+                      <option key={pos} value={pos}>{pos}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Department
                   </label>
-                  <input
-                    type="text"
+                  <select
                     name="department"
                     value={formData.department || ''}
                     onChange={handleInputChange}
                     className="w-full p-2 border border-gray-300 rounded"
-                  />
+                  >
+                    <option value="">Select Department</option>
+                    {departments.map((dept) => (
+                      <option key={dept} value={dept}>{dept}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">

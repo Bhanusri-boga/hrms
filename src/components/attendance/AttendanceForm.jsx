@@ -8,11 +8,11 @@ const AttendanceForm = ({ attendance, employees, onSubmit, onClose }) => {
   const { values, errors, handleChange, handleBlur, validateForm } = useForm(
     {
       employeeId: attendance?.employeeId || '',
+      inTime: attendance?.inTime || '',
+      outTime: attendance?.outTime || '',
       date: attendance?.date || '',
-      checkIn: attendance?.checkIn || '',
-      checkOut: attendance?.checkOut || '',
-      status: attendance?.status || 'present',
-      notes: attendance?.notes || ''
+      status: attendance?.status || 'PRESENT',
+      note: attendance?.note || ''
     },
     {
       employeeId: { required: true },
@@ -29,11 +29,11 @@ const AttendanceForm = ({ attendance, employees, onSubmit, onClose }) => {
   };
 
   const statusOptions = [
-    { value: 'present', label: 'Present' },
-    { value: 'absent', label: 'Absent' },
-    { value: 'late', label: 'Late' },
-    { value: 'half_day', label: 'Half Day' },
-    { value: 'leave', label: 'On Leave' }
+    { value: 'PRESENT', label: 'Present' },
+    { value: 'ABSENT', label: 'Absent' },
+    { value: 'LATE', label: 'Late' },
+    { value: 'HALF_DAY', label: 'Half Day' },
+    { value: 'LEAVE', label: 'On Leave' }
   ];
 
   return (
@@ -69,23 +69,23 @@ const AttendanceForm = ({ attendance, employees, onSubmit, onClose }) => {
 
         <div className="grid grid-cols-2 gap-4">
           <FormInput
-            label="Check In"
-            name="checkIn"
+            label="In Time"
+            name="inTime"
             type="datetime-local"
-            value={values.checkIn}
+            value={values.inTime}
             onChange={handleChange}
             onBlur={handleBlur}
-            error={errors.checkIn}
+            error={errors.inTime}
           />
 
           <FormInput
-            label="Check Out"
-            name="checkOut"
+            label="Out Time"
+            name="outTime"
             type="datetime-local"
-            value={values.checkOut}
+            value={values.outTime}
             onChange={handleChange}
             onBlur={handleBlur}
-            error={errors.checkOut}
+            error={errors.outTime}
           />
         </div>
 
@@ -101,13 +101,13 @@ const AttendanceForm = ({ attendance, employees, onSubmit, onClose }) => {
         />
 
         <FormInput
-          label="Notes"
-          name="notes"
+          label="Note"
+          name="note"
           type="textarea"
-          value={values.notes}
+          value={values.note}
           onChange={handleChange}
           onBlur={handleBlur}
-          error={errors.notes}
+          error={errors.note}
         />
 
         <div className="flex justify-end space-x-3 mt-6">

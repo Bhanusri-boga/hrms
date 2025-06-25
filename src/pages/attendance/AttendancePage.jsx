@@ -37,7 +37,17 @@ const AttendancePage = () => {
 
   const handleMarkAttendance = async (employeeId, status) => {
     try {
-      await attendanceService.markAttendance({ employeeId, status });
+      const now = new Date();
+      const inTime = now.toISOString();
+      const outTime = null; // or set as needed
+      const note = '';
+      await attendanceService.markAttendance({
+        employeeId,
+        inTime,
+        outTime,
+        note,
+        status: status.toUpperCase()
+      });
       addNotification('success', 'Attendance marked successfully');
       await Promise.all([fetchAttendance(), fetchStats()]);
     } catch (error) {
@@ -79,7 +89,13 @@ const AttendancePage = () => {
                   Employee
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Date
+                  In Time
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Out Time
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Note
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
@@ -97,19 +113,25 @@ const AttendancePage = () => {
                       {record.employeeName}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">
-                      {new Date(record.date).toLocaleDateString()}
-                    </div>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {record.inTime ? new Date(record.inTime).toLocaleString() : '-'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {record.outTime ? new Date(record.outTime).toLocaleString() : '-'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {record.note || '-'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        record.status === 'present'
+                        record.status === 'PRESENT'
                           ? 'bg-green-100 text-green-800'
-                          : record.status === 'absent'
+                          : record.status === 'ABSENT'
                           ? 'bg-red-100 text-red-800'
-                          : 'bg-yellow-100 text-yellow-800'
+                          : record.status === 'LATE'
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : 'bg-gray-100 text-gray-800'
                       }`}
                     >
                       {record.status}
@@ -117,13 +139,13 @@ const AttendancePage = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button
-                      onClick={() => handleMarkAttendance(record.employeeId, 'present')}
+                      onClick={() => handleMarkAttendance(record.employeeId, 'PRESENT')}
                       className="text-green-600 hover:text-green-900 mr-4"
                     >
                       Mark Present
                     </button>
                     <button
-                      onClick={() => handleMarkAttendance(record.employeeId, 'absent')}
+                      onClick={() => handleMarkAttendance(record.employeeId, 'ABSENT')}
                       className="text-red-600 hover:text-red-900"
                     >
                       Mark Absent

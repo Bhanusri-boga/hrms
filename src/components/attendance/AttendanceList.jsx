@@ -14,13 +14,16 @@ const AttendanceList = ({ attendance, onEdit, onView, onDelete }) => {
               Date
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Check In
+              In Time
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Check Out
+              Out Time
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Status
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Note
             </th>
             <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
               Actions
@@ -56,28 +59,33 @@ const AttendanceList = ({ attendance, onEdit, onView, onDelete }) => {
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-900">
-                  {record.checkIn ? formatDateTime(record.checkIn) : '-'}
+                  {record.inTime ? formatDateTime(record.inTime) : '-'}
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-900">
-                  {record.checkOut ? formatDateTime(record.checkOut) : '-'}
+                  {record.outTime ? formatDateTime(record.outTime) : '-'}
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span
                   className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    record.status === 'present'
+                    record.status === 'PRESENT'
                       ? 'bg-green-100 text-green-800'
-                      : record.status === 'absent'
+                      : record.status === 'ABSENT'
                       ? 'bg-red-100 text-red-800'
-                      : record.status === 'late'
+                      : record.status === 'LATE'
                       ? 'bg-yellow-100 text-yellow-800'
                       : 'bg-gray-100 text-gray-800'
                   }`}
                 >
                   {record.status}
                 </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="text-sm text-gray-900">
+                  {record.note || '-'}
+                </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <button

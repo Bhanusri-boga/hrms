@@ -3,34 +3,34 @@ import { formatDate } from '../../utils/formatUtils';
 
 const UserList = ({ users, onView, onEdit, onDelete }) => {
   return (
-    <div className="bg-white shadow-md rounded-lg overflow-hidden">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+    <div className="overflow-x-auto">
+      <table className="w-full divide-y divide-gray-200">
+        <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
               User
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
               Role
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
               Email
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider min-w-[120px]">
               Status
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
               Last Login
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-right text-xs font-medium text-gray-600 uppercase tracking-wider min-w-[210px]">
               Actions
             </th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {users?.map((user) => (
-            <tr key={user.id} className="hover:bg-gray-50">
-              <td className="px-6 py-4 whitespace-nowrap">
+          {users?.map((user, index) => (
+            <tr key={user.id} className={`hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}>
+              <td className="px-4 py-4 whitespace-nowrap">
                 <div className="flex items-center">
                   <div className="flex-shrink-0 h-10 w-10">
                     <img
@@ -49,59 +49,61 @@ const UserList = ({ users, onView, onEdit, onDelete }) => {
                   </div>
                 </div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap">
+              <td className="px-4 py-4 whitespace-nowrap">
                 <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  className={`inline-flex items-center px-3 py-1 text-xs font-medium rounded-full border ${
                     user.role === 'admin'
-                      ? 'bg-purple-100 text-purple-800'
+                      ? 'bg-purple-100 text-purple-800 border-purple-200'
                       : user.role === 'manager'
-                      ? 'bg-blue-100 text-blue-800'
-                      : 'bg-green-100 text-green-800'
+                      ? 'bg-blue-100 text-blue-800 border-blue-200'
+                      : 'bg-green-100 text-green-800 border-green-200'
                   }`}
                 >
                   {user.role}
                 </span>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-900">{user.email}</div>
+              <td className="px-4 py-4 whitespace-nowrap">
+                <div className="text-sm text-gray-900 break-all">{user.email}</div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap">
+              <td className="px-4 py-4 whitespace-nowrap">
                 <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  className={`inline-flex items-center px-3 py-1 text-xs font-medium rounded-full border ${
                     user.status === 'active'
-                      ? 'bg-green-100 text-green-800'
+                      ? 'bg-green-100 text-green-800 border-green-200'
                       : user.status === 'inactive'
-                      ? 'bg-gray-100 text-gray-800'
-                      : 'bg-red-100 text-red-800'
+                      ? 'bg-gray-100 text-gray-800 border-gray-200'
+                      : 'bg-red-100 text-red-800 border-red-200'
                   }`}
                 >
                   {user.status}
                 </span>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap">
+              <td className="px-4 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-900">
                   {user.lastLogin ? formatDate(user.lastLogin) : 'Never'}
                 </div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button
-                  onClick={() => onView(user)}
-                  className="text-blue-600 hover:text-blue-900 mr-4"
-                >
-                  View
-                </button>
-                <button
-                  onClick={() => onEdit(user)}
-                  className="text-indigo-600 hover:text-indigo-900 mr-4"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => onDelete(user.id)}
-                  className="text-red-600 hover:text-red-900"
-                >
-                  Delete
-                </button>
+              <td className="px-4 py-4 whitespace-nowrap text-right">
+                <div className="flex justify-end space-x-2">
+                  <button
+                    onClick={() => onView(user)}
+                    className="px-3 py-1 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-medium"
+                  >
+                    View
+                  </button>
+                  <button
+                    onClick={() => onEdit(user)}
+                    className="px-3 py-1 text-xs bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors font-medium"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => onDelete(user.id)}
+                    className="px-3 py-1 text-xs bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium"
+                  >
+                    Delete
+                  </button>
+                </div>
               </td>
             </tr>
           ))}

@@ -34,7 +34,7 @@ const userSpecificItems = [
 ];
 
 /**
- * Futuristic Sidebar component with 3D navigation and glassmorphic effects
+ * Modern Sidebar component with smooth animations and contemporary design
  */
 const Sidebar = ({ isOpen, onToggle }) => {
   const { user } = useAuth();
@@ -43,14 +43,16 @@ const Sidebar = ({ isOpen, onToggle }) => {
 
   return (
     <aside
-      className={`fixed left-0 top-12 h-[calc(100vh-3rem)] z-30 flex flex-col bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl shadow-lg border-r border-gray-200 dark:border-gray-700 transition-all duration-300 overflow-hidden ${
-        isOpen ? 'w-56' : 'w-16'
+      className={`fixed left-0 top-16 h-[calc(100vh-4rem)] z-30 flex flex-col bg-white shadow-xl border-r border-gray-100 transition-all duration-300 overflow-hidden ${
+        isOpen ? 'w-64' : 'w-[4.5rem]'
       }`}
     >
       {/* Toggle Button */}
       <button
         onClick={onToggle}
-        className="absolute top-1/2 -right-3 transform -translate-y-1/2 z-50 p-2 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg hover:shadow-indigo-500/50 transition-all duration-300 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+        className={`absolute z-50 p-2 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
+          isOpen ? 'top-6 -right-3' : 'top-20 -right-3'
+        }`}
         aria-label={isOpen ? "Collapse sidebar" : "Expand sidebar"}
       >
         {isOpen ? (
@@ -60,37 +62,66 @@ const Sidebar = ({ isOpen, onToggle }) => {
         )}
       </button>
 
+      {/* Logo Section */}
+      <div className={`flex items-center border-b border-gray-100 ${isOpen ? 'px-6 py-6' : 'px-4 py-6 justify-center'}`}>
+        {isOpen ? (
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <span className="text-white font-bold text-lg">H</span>
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">HRMS</h1>
+              <p className="text-xs text-gray-500">Human Resources</p>
+            </div>
+          </div>
+        ) : (
+          <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
+            <span className="text-white font-bold text-lg">H</span>
+          </div>
+        )}
+      </div>
+
       {/* Navigation Links */}
-      <nav className="flex-grow px-1 py-2 space-y-1 overflow-y-auto no-scrollbar">
-        {allMenuItems.map((item) => (
-          <SidebarNavLink
-            key={item.title}
-            item={item}
-            location={location}
-            isCollapsed={!isOpen}
-          />
-        ))}
+      <nav className={`flex-grow overflow-y-auto scrollbar-hide ${isOpen ? 'px-4 py-6' : 'px-2 py-6'}`}>
+        <div className="space-y-2">
+          {allMenuItems.map((item) => (
+            <SidebarNavLink
+              key={item.title}
+              item={item}
+              location={location}
+              isCollapsed={!isOpen}
+            />
+          ))}
+        </div>
       </nav>
 
       {/* User Info Section - shows when expanded */}
       <AnimatePresence>
-        {isOpen && user && (
-          <div
-            className="p-2 border-t border-gray-200 dark:border-gray-700"
-          >
-            <div className="flex items-center space-x-2 p-1 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+        <div className={`border-t border-gray-100 ${isOpen ? 'p-4' : 'p-2'}`}>
+          {isOpen && user ? (
+            <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-4">
+              <div className="flex items-center space-x-3">
+                <img 
+                  src={user.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${user.name || user.email}`}
+                  alt={user.name || 'User'}
+                  className="h-10 w-10 rounded-full border-2 border-indigo-200"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">{user.name || 'User'}</p>
+                  <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                </div>
+              </div>
+            </div>
+          ) : !isOpen && user ? (
+            <div className="flex justify-center">
               <img 
                 src={user.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${user.name || user.email}`}
                 alt={user.name || 'User'}
-                className="h-7 w-7 rounded-full border border-indigo-500"
+                className="h-10 w-10 rounded-full border-2 border-indigo-200"
               />
-              <div>
-                <p className="text-xs font-medium text-gray-900 dark:text-white truncate">{user.name || 'User'}</p>
-                <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
-              </div>
             </div>
-          </div>
-        )}
+          ) : null}
+        </div>
       </AnimatePresence>
     </aside>
   );
@@ -101,40 +132,51 @@ const SidebarNavLink = ({ item, location, isCollapsed }) => {
   const IconComponent = item.icon;
 
   const linkClasses = `
-    flex items-center rounded-lg transition-all duration-200 ease-in-out group relative
-    font-medium text-xs
-    hover:bg-gray-100 dark:hover:bg-gray-700/50
-    focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500
+    flex items-center rounded-xl transition-all duration-300 ease-in-out group relative
+    font-medium text-sm
+    focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
     ${isActive 
-      ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400'
-      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}
-    ${isCollapsed ? 'justify-center p-2.5' : 'p-1.5'}
+      ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25 hover:from-indigo-700 hover:to-purple-700'
+      : 'text-gray-700 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 hover:text-indigo-600'}
+    ${isCollapsed ? 'justify-center p-3 mx-1' : 'p-3'}
   `;
 
   const iconClasses = `
-    w-5 h-5 transition-colors duration-200 
-    ${isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300'}
-    ${isCollapsed ? '' : 'mr-2'}
+    ${isCollapsed ? 'w-6 h-6' : 'w-5 h-5'} transition-all duration-300
+    ${isActive ? 'text-white' : 'text-gray-500 group-hover:text-indigo-600'}
+    ${isCollapsed ? '' : 'mr-3'}
   `;
 
   return (
-    <NavLink
-      to={item.path}
-      title={isCollapsed ? item.title : undefined}
-      className={linkClasses}
-    >
-      {IconComponent && <IconComponent className={iconClasses} />}
-      {!isCollapsed && (
-        <span className="whitespace-nowrap overflow-hidden">
+    <div className="relative group">
+      <NavLink
+        to={item.path}
+        title={isCollapsed ? item.title : undefined}
+        className={linkClasses}
+      >
+        {IconComponent && <IconComponent className={iconClasses} />}
+        {!isCollapsed && (
+          <span className="whitespace-nowrap overflow-hidden font-medium">
+            {item.title}
+          </span>
+        )}
+        
+        {/* Active indicator */}
+        {isActive && !isCollapsed && (
+          <div className="ml-auto">
+            <div className="w-2 h-2 bg-white rounded-full"></div>
+          </div>
+        )}
+      </NavLink>
+      
+      {/* Modern tooltip for collapsed state */}
+      {isCollapsed && (
+        <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 whitespace-nowrap z-50 shadow-xl">
           {item.title}
-        </span>
+          <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
+        </div>
       )}
-      {isActive && (
-        <div 
-          className={`absolute top-1/2 -translate-y-1/2 h-3/4 w-1 bg-indigo-600 dark:bg-indigo-400 rounded-r-full ${isCollapsed ? 'left-0' : '-left-1'}`}
-        />
-      )}
-    </NavLink>
+    </div>
   );
 };
 

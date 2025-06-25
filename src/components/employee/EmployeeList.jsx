@@ -29,112 +29,86 @@ const EmployeeList = ({ employees, onEdit, onView, onDelete }) => {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-        <thead className="bg-gray-50 dark:bg-gray-800">
+    <div className="overflow-x-auto ">
+      <table className="w-full divide-y divide-gray-200">
+        <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
           <tr>
-            <th
-              scope="col"
-              className="px-2 py-1 text-left text-xxs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-            >
-              Name
-            </th>
-            <th
-              scope="col"
-              className="px-2 py-1 text-left text-xxs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-            >
-              Position
-            </th>
-            <th
-              scope="col"
-              className="px-2 py-1 text-left text-xxs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-            >
-              Department
-            </th>
-            <th
-              scope="col"
-              className="px-2 py-1 text-left text-xxs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-            >
-              Contact
-            </th>
-            <th
-              scope="col"
-              className="px-2 py-1 text-left text-xxs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-            >
-              Join Date
-            </th>
-            <th
-              scope="col"
-              className="px-2 py-1 text-right text-xxs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-            >
-              Actions
-            </th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Emp ID</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Employee</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Department</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Position</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Contact</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Join Date</th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider min-w-[120px]">Status</th>
+            <th className="px-4 py-3 text-right text-xs font-medium text-gray-600 uppercase tracking-wider min-w-[210px]">Actions</th>
           </tr>
         </thead>
-        <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-          {employees.map((employee) => (
+        <tbody className="bg-white divide-y divide-gray-200">
+          {employees.map((employee, index) => (
             <tr
-              key={employee.id}
-              className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
+              key={employee.employeeId || employee.id}
+              className={`hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}
             >
-              <td className="px-2 py-1 whitespace-nowrap">
+              <td className="px-4 py-4">
+                <div className="text-sm font-medium text-gray-900">
+                  #{employee.employeeId}
+                </div>
+              </td>
+              <td className="px-4 py-4">
                 <div className="flex items-center">
-                  <div className="flex-shrink-0 h-6 w-6">
-                    <img
-                      className="h-6 w-6 rounded-full object-cover"
-                      src={employee.avatar || 'https://via.placeholder.com/40'}
-                      alt={employee.name}
-                    />
-                  </div>
-                  <div className="ml-2">
-                    <div className="text-xs font-medium text-gray-900 dark:text-white">
-                      {employee.name}
+                  {/* <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-medium text-sm mr-3">
+                    {(employee.firstName?.charAt(0) || '') + (employee.lastName?.charAt(0) || '')}
+                  </div> */}
+                  <div>
+                    <div className="text-sm font-medium text-gray-900">
+                      {employee.firstName} {employee.lastName}
                     </div>
-                    <div className="text-xxs text-gray-500 dark:text-gray-400">
-                      {employee.email}
-                    </div>
+                    <div className="text-xs text-gray-500 break-all">{employee.workEmail || employee.email}</div>
                   </div>
                 </div>
               </td>
-              <td className="px-2 py-1 whitespace-nowrap">
-                <div className="text-xs text-gray-900 dark:text-white">
-                  {employee.position}
-                </div>
+              <td className="px-4 py-4">
+                <div className="text-sm text-gray-900">{employee.departmentName || employee.department}</div>
               </td>
-              <td className="px-2 py-1 whitespace-nowrap">
-                <div className="text-xs text-gray-900 dark:text-white">
-                  {employee.department}
-                </div>
+              <td className="px-4 py-4">
+                <div className="text-sm text-gray-900">{employee.jobTitleName || employee.jobTitle}</div>
               </td>
-              <td className="px-2 py-1 whitespace-nowrap">
-                <div className="text-xs text-gray-900 dark:text-white">
-                  {formatPhoneNumber(employee.phone)}
-                </div>
+              <td className="px-4 py-4">
+                <div className="text-sm text-gray-900">{formatPhoneNumber(employee.mobilePhone || employee.phone)}</div>
               </td>
-              <td className="px-2 py-1 whitespace-nowrap">
-                <div className="text-xs text-gray-900 dark:text-white">
-                  {formatDate(employee.joinDate)}
-                </div>
+              <td className="px-4 py-4">
+                <div className="text-sm text-gray-900">{formatDate(employee.joinedDate || employee.joinDate)}</div>
               </td>
-              <td className="px-2 py-1 whitespace-nowrap text-right text-xs font-medium">
-                <button
-                  onClick={() => onView(employee)}
-                  className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-1 focus:outline-none focus:underline"
-                >
-                  View
-                </button>
-                <button
-                  onClick={() => onEdit(employee)}
-                  className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-1 focus:outline-none focus:underline"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => onDelete(employee.id)}
-                  className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 focus:outline-none focus:underline"
-                >
-                  Delete
-                </button>
+              <td className="px-4 py-4">
+                <span className={`inline-flex items-center px-3 py-1 text-xs font-medium rounded-full ${
+                  (employee.status || 'Active') === 'Active' 
+                    ? 'bg-green-100 text-green-800 border border-green-200'
+                    : 'bg-red-100 text-red-800 border border-red-200'
+                }`}>
+                  {employee.status || 'Active'}
+                </span>
+              </td>
+              <td className="px-4 py-4 text-right">
+                <div className="flex justify-end space-x-2">
+                  <button
+                    onClick={() => onView(employee)}
+                    className="px-3 py-1 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-medium"
+                  >
+                    View
+                  </button>
+                  <button
+                    onClick={() => onEdit(employee)}
+                    className="px-3 py-1 text-xs bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors font-medium"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => onDelete(employee.employeeId || employee.id)}
+                    className="px-3 py-1 text-xs bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium"
+                  >
+                    Delete
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
@@ -144,4 +118,4 @@ const EmployeeList = ({ employees, onEdit, onView, onDelete }) => {
   );
 };
 
-export default EmployeeList; 
+export default EmployeeList;

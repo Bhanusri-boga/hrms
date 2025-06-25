@@ -41,6 +41,19 @@
   .compact-spacing > * + * {
     margin-top: 0.5rem;
   }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .w-18 {
+    width: 4.5rem;
+  }
 }
 
 /* Global styles to reduce font sizes */

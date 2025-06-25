@@ -12,11 +12,11 @@ const Layout = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 overflow-x-hidden">
       <Header />
-      <div className="flex pt-12 relative">
+      <div className="flex pt-16 relative">
         <Sidebar isOpen={isSidebarOpen} onToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
         <main 
-          className={`flex-1 min-h-[calc(100vh-3rem)] transition-all duration-300 ${
-            isSidebarOpen ? 'ml-56' : 'ml-16'
+          className={`flex-1 min-h-[calc(100vh-4rem)] transition-all duration-300 ${
+            isSidebarOpen ? 'ml-64' : 'ml-[4.5rem]'
           }`}
         >
           <div className="p-3">

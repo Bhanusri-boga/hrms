@@ -60,9 +60,9 @@ const Modal = ({
             transition={{ type: 'spring', duration: 0.5 }}
             className={`fixed inset-0 flex items-center justify-center z-50 p-4 ${className}`}
           >
-            <div className={`w-full ${sizes[size]} bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden max-h-[90vh] flex flex-col`}>
+            <div className={`card w-full ${sizes[size]} bg-white dark:bg-gray-800 rounded-lg shadow-xl flex flex-col max-h-[90vh]`}>
               {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                   {title}
                 </h3>
@@ -90,7 +90,11 @@ const Modal = ({
               </div>
 
               {/* Content */}
-              <div className="p-4 bg-white dark:bg-gray-800 overflow-y-auto">{children}</div>
+              <div className="flex-1 overflow-y-auto">
+                <div className="p-4 bg-white dark:bg-gray-800">
+                  {children}
+                </div>
+              </div>
             </div>
           </motion.div>
         </>

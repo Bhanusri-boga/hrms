@@ -9,28 +9,33 @@ import GlassCard from '../common/GlassCard';
 import { motion } from 'framer-motion';
 import { EqualStencilFunc } from 'three';
 
-const TimeSheetForm = ({ timeSheet, projects, onSubmit, onClose }) => {
+const TimeSheetForm = ({ timeSheet, onSubmit, onClose }) => {
   const { values, errors, handleChange, handleBlur, validateForm } = useForm(
     {
-      projectId: timeSheet?.projectId || '',
-      task: timeSheet?.task || '',
+      employeeId: timeSheet?.employeeId || '',
       date: timeSheet?.date || '',
-      hours: timeSheet?.hours || '',
+      startTime: timeSheet?.startTime || '',
+      endTime: timeSheet?.endTime || '',
+      breakDuration: timeSheet?.breakDuration || '60',
       description: timeSheet?.description || '',
       status: timeSheet?.status || 'pending'
     },
     {
-      projectId: { required: true },
-      task: { required: true },
+      employeeId: { required: true },
       date: { required: true },
-      hours: { required: true, min: 0.5, max: 24 }
+      startTime: { required: true },
+      endTime: { required: true },
+      breakDuration: { required: true, min: 0 }
     }
   );
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      onSubmit(timeSheet?.id, values);
+      onSubmit(timeSheet?.id, {
+        ...values,
+        breakDuration: Number(values.breakDuration)
+      });
     }
   };
 
@@ -42,41 +47,25 @@ const TimeSheetForm = ({ timeSheet, projects, onSubmit, onClose }) => {
 
   return (
     <Modal
+      isOpen={true}
       title={timeSheet ? 'Edit Time Sheet' : 'Add Time Sheet'}
       onClose={onClose}
       className="glass-modal"
     >
-      <Form3D onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <GlassCard className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormSelect
-              label="Project"
-              name="projectId"
-              value={values.projectId}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={errors.projectId}
-              options={projects.map(project => ({
-                value: project.id,
-                label: project.name
-              }))}
-              required
-              className="input-3d"
-            />
-
             <FormInput
-              label="Task"
-              name="task"
-              value={values.task}
+              label="Employee ID"
+              name="employeeId"
+              type="number"
+              value={values.employeeId}
               onChange={handleChange}
               onBlur={handleBlur}
-              error={errors.task}
+              error={errors.employeeId}
               required
               className="input-3d"
             />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <FormInput
               label="Date"
               name="date"
@@ -88,19 +77,54 @@ const TimeSheetForm = ({ timeSheet, projects, onSubmit, onClose }) => {
               required
               className="input-3d"
             />
+          </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <FormInput
-              label="Hours"
-              name="hours"
-              type="number"
-              min="0.5"
-              max="24"
-              step="0.5"
-              value={values.hours}
+              label="Start Time"
+              name="startTime"
+              type="time"
+              value={values.startTime}
               onChange={handleChange}
               onBlur={handleBlur}
-              error={errors.hours}
+              error={errors.startTime}
               required
+              className="input-3d"
+            />
+
+            <FormInput
+              label="End Time"
+              name="endTime"
+              type="time"
+              value={values.endTime}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.endTime}
+              required
+              className="input-3d"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <FormInput
+              label="Break Duration (minutes)"
+              name="breakDuration"
+              type="number"
+              min="0"
+              step="15"
+              value={values.breakDuration}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.breakDuration}
+              required
+              className="input-3d"
+            />
+            <FormSelect
+              label="Status"
+              name="status"
+              value={values.status}
+              onChange={handleChange}
+              options={statusOptions}
               className="input-3d"
             />
           </div>
@@ -115,17 +139,6 @@ const TimeSheetForm = ({ timeSheet, projects, onSubmit, onClose }) => {
               onBlur={handleBlur}
               error={errors.description}
               className="input-3d h-24"
-            />
-          </div>
-
-          <div className="mt-6">
-            <FormSelect
-              label="Status"
-              name="status"
-              value={values.status}
-              onChange={handleChange}
-              options={statusOptions}
-              className="input-3d"
             />
           </div>
 
@@ -149,7 +162,7 @@ const TimeSheetForm = ({ timeSheet, projects, onSubmit, onClose }) => {
             </motion.button>
           </div>
         </GlassCard>
-      </Form3D>
+      </form>
     </Modal>
   );
 };

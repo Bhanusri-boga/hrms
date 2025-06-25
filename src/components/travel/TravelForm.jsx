@@ -4,58 +4,104 @@ import Modal from '../common/Modal';
 import FormInput from '../common/FormInput';
 import FormSelect from '../common/FormSelect';
 
-const TravelForm = ({ travel, onSubmit, onClose }) => {
-  const { values, errors, handleChange, handleBlur, validateForm } = useForm(
-    {
-      purpose: travel?.purpose || '',
-      destination: travel?.destination || '',
-      startDate: travel?.startDate || '',
-      endDate: travel?.endDate || '',
-      transportMode: travel?.transportMode || '',
-      estimatedCost: travel?.estimatedCost || '',
-      advanceRequired: travel?.advanceRequired || false,
-      advanceAmount: travel?.advanceAmount || '',
-      status: travel?.status || 'pending',
-      notes: travel?.notes || ''
-    },
-    {
-      purpose: { required: true },
-      destination: { required: true },
-      startDate: { required: true },
-      endDate: { required: true },
-      transportMode: { required: true },
-      estimatedCost: { required: true, min: 0 }
-    }
-  );
+const travelTypeOptions = [
+  { value: 'BUSINESS', label: 'Business' },
+  { value: 'TRAINING', label: 'Training' },
+  { value: 'CONFERENCE', label: 'Conference' },
+  { value: 'OTHER', label: 'Other' }
+];
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      onSubmit(travel?.id, values);
-    }
+const modeOfTravelOptions = [
+  { value: 'FLIGHT', label: 'Flight' },
+  { value: 'TRAIN', label: 'Train' },
+  { value: 'BUS', label: 'Bus' },
+  { value: 'CAR', label: 'Car' },
+  { value: 'OTHER', label: 'Other' }
+];
+
+const TravelForm = ({ travel, onSubmit, onClose }) => {
+  const initialValues = travel ? {
+    employeeId: travel.employeeId,
+    travelType: travel.travelType,
+    purpose: travel.purpose,
+    startDate: travel.startDate || travel.departureDate,
+    endDate: travel.endDate || travel.returnDate,
+    destination: travel.destination,
+    modeOfTravel: travel.modeOfTravel,
+    estimatedCost: travel.estimatedCost,
+    advanceAmount: travel.advanceAmount || 0,
+    comments: travel.comments || travel.notes || ''
+  } : {
+    employeeId: '',
+    travelType: 'BUSINESS',
+    purpose: '',
+    startDate: '',
+    endDate: '',
+    destination: '',
+    modeOfTravel: 'FLIGHT',
+    estimatedCost: '',
+    advanceAmount: '',
+    comments: ''
   };
 
-  const transportModes = [
-    'Air',
-    'Train',
-    'Bus',
-    'Car',
-    'Other'
-  ];
+  const validate = (values) => {
+    const errors = {};
+    if (!values.employeeId) errors.employeeId = 'Required';
+    if (!values.purpose) errors.purpose = 'Required';
+    if (!values.startDate) errors.startDate = 'Required';
+    if (!values.endDate) errors.endDate = 'Required';
+    if (!values.destination) errors.destination = 'Required';
+    if (!values.estimatedCost) errors.estimatedCost = 'Required';
+    if (values.advanceAmount && Number(values.advanceAmount) > Number(values.estimatedCost)) {
+      errors.advanceAmount = 'Cannot exceed estimated cost';
+    }
+    if (new Date(values.endDate) < new Date(values.startDate)) {
+      errors.endDate = 'End date must be after start date';
+    }
+    return errors;
+  };
 
-  const statusOptions = [
-    { value: 'pending', label: 'Pending' },
-    { value: 'approved', label: 'Approved' },
-    { value: 'rejected', label: 'Rejected' },
-    { value: 'completed', label: 'Completed' }
-  ];
+  const { values, errors, handleChange, handleBlur, handleSubmit } = useForm({
+    initialValues,
+    onSubmit: (formData) => {
+      onSubmit(travel?.id, {
+        ...formData,
+        estimatedCost: Number(formData.estimatedCost),
+        advanceAmount: Number(formData.advanceAmount) || 0
+      });
+    },
+    validate
+  });
 
   return (
     <Modal
-      title={travel ? 'Edit Travel Request' : 'New Travel Request'}
+      isOpen={true}
       onClose={onClose}
+      title={travel ? 'Edit Travel Request' : 'New Travel Request'}
+      size="lg"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
+        <FormInput
+          label="Employee ID"
+          name="employeeId"
+          type="number"
+          value={values.employeeId}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          error={errors.employeeId}
+          required
+        />
+
+        <FormSelect
+          label="Travel Type"
+          name="travelType"
+          value={values.travelType}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          options={travelTypeOptions}
+          required
+        />
+
         <FormInput
           label="Purpose"
           name="purpose"
@@ -63,16 +109,6 @@ const TravelForm = ({ travel, onSubmit, onClose }) => {
           onChange={handleChange}
           onBlur={handleBlur}
           error={errors.purpose}
-          required
-        />
-
-        <FormInput
-          label="Destination"
-          name="destination"
-          value={values.destination}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          error={errors.destination}
           required
         />
 
@@ -100,50 +136,40 @@ const TravelForm = ({ travel, onSubmit, onClose }) => {
           />
         </div>
 
-        <FormSelect
-          label="Transport Mode"
-          name="transportMode"
-          value={values.transportMode}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          error={errors.transportMode}
-          options={transportModes}
-          required
-        />
-
         <FormInput
-          label="Estimated Cost"
-          name="estimatedCost"
-          type="number"
-          min="0"
-          step="0.01"
-          value={values.estimatedCost}
+          label="Destination"
+          name="destination"
+          value={values.destination}
           onChange={handleChange}
           onBlur={handleBlur}
-          error={errors.estimatedCost}
+          error={errors.destination}
           required
         />
 
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="advanceRequired"
-            name="advanceRequired"
-            checked={values.advanceRequired}
-            onChange={(e) => handleChange({
-              target: {
-                name: 'advanceRequired',
-                value: e.target.checked
-              }
-            })}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-          />
-          <label htmlFor="advanceRequired" className="ml-2 block text-sm text-gray-900">
-            Advance Required
-          </label>
-        </div>
+        <FormSelect
+          label="Mode of Travel"
+          name="modeOfTravel"
+          value={values.modeOfTravel}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          options={modeOfTravelOptions}
+          required
+        />
 
-        {values.advanceRequired && (
+        <div className="grid grid-cols-2 gap-4">
+          <FormInput
+            label="Estimated Cost"
+            name="estimatedCost"
+            type="number"
+            min="0"
+            step="0.01"
+            value={values.estimatedCost}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={errors.estimatedCost}
+            required
+          />
+
           <FormInput
             label="Advance Amount"
             name="advanceAmount"
@@ -155,39 +181,30 @@ const TravelForm = ({ travel, onSubmit, onClose }) => {
             onBlur={handleBlur}
             error={errors.advanceAmount}
           />
-        )}
-
-        <FormSelect
-          label="Status"
-          name="status"
-          value={values.status}
-          onChange={handleChange}
-          options={statusOptions}
-        />
+        </div>
 
         <FormInput
-          label="Notes"
-          name="notes"
+          label="Comments"
+          name="comments"
           type="textarea"
-          value={values.notes}
+          value={values.comments}
           onChange={handleChange}
           onBlur={handleBlur}
-          error={errors.notes}
         />
 
-        <div className="flex justify-end space-x-3 mt-6">
+        <div className="flex justify-end space-x-2 pt-4">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
           >
-            {travel ? 'Update' : 'Submit'}
+            {travel ? 'Update Request' : 'Submit Request'}
           </button>
         </div>
       </form>

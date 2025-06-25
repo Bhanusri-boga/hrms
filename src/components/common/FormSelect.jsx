@@ -24,7 +24,7 @@ const FormSelect = forwardRef(({
   `;
 
   return (
-    <div className={className}>
+    <div className={`mb-4 card ${className}`}>
       {label && (
         <label
           htmlFor={name}

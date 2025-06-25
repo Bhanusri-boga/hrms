@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/apiService";
-import LeaveRequestList from "../components/leave/LeaveRequestList";
+import LeaveRequestList from "../components/leave/LeaveRequestList.jsx";
 import LeaveRequestForm from "../components/leave/LeaveRequestForm";
 import LeaveRequestDetail from "../components/leave/LeaveRequestDetail";
 
@@ -13,10 +13,32 @@ const LeaveRequestsPage = () => {
 
   // Fetch all leave requests (for demo, you may want to filter by employee/department)
   useEffect(() => {
-    api.get("/api/v1/leaves/requests").then(res => {
-      setRequests(res.data);
-      setLoading(false);
-    });
+    // api.get("/api/v1/leaves/requests").then(res => {
+    //   setRequests(res.data);
+    //   setLoading(false);
+    // }).catch(() => setLoading(false));
+     const mockRequests = [
+    {
+      id: 1,
+      employeeName: "John Doe",
+      leaveType: "Annual Leave",
+      startDate: "2025-07-01",
+      endDate: "2025-07-05",
+      status: "pending",
+      reason: "Family vacation"
+    },
+    {
+      id: 2,
+      employeeName: "Jane Smith",
+      leaveType: "Sick Leave",
+      startDate: "2025-06-20",
+      endDate: "2025-06-22",
+      status: "approved",
+      reason: "Medical"
+    }
+  ];
+  setRequests(mockRequests);
+  setLoading(false);
   }, []);
 
   const handleCreate = (data) => {

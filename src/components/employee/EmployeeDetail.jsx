@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatDate, formatPhoneNumber, formatCurrency } from '../../utils/formatUtils';
+import { formatDate, formatPhoneNumber } from '../../utils/formatUtils';
 import Modal from '../common/Modal';
 
 const EmployeeDetail = ({ employee, onClose, onEdit }) => {
@@ -10,86 +10,53 @@ const EmployeeDetail = ({ employee, onClose, onEdit }) => {
       <div className="space-y-6">
         <div className="flex items-center space-x-4">
           <img
-            src={employee.avatar || 'https://via.placeholder.com/100'}
-            alt={employee.name}
-            className="h-24 w-24 rounded-full"
+            src={employee.profileImage || 'https://via.placeholder.com/100'}
+            alt={employee.firstName || 'Profile'}
+            className="h-24 w-24 rounded-full object-cover"
           />
           <div>
-            <h3 className="text-lg font-medium text-gray-900">{employee.name}</h3>
-            <p className="text-sm text-gray-500">{employee.email}</p>
+            <h3 className="text-lg font-medium text-gray-900">
+              {employee.firstName} {employee.middleName} {employee.lastName}
+            </h3>
+            <p className="text-sm text-gray-500">{employee.workEmail || employee.privateEmail}</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <h4 className="text-sm font-medium text-gray-500">Position</h4>
-            <p className="mt-1 text-sm text-gray-900">{employee.position}</p>
-          </div>
-
-          <div>
-            <h4 className="text-sm font-medium text-gray-500">Department</h4>
-            <p className="mt-1 text-sm text-gray-900">{employee.department}</p>
-          </div>
-
-          <div>
-            <h4 className="text-sm font-medium text-gray-500">Phone</h4>
-            <p className="mt-1 text-sm text-gray-900">
-              {formatPhoneNumber(employee.phone)}
-            </p>
-          </div>
-
-          <div>
-            <h4 className="text-sm font-medium text-gray-500">Join Date</h4>
-            <p className="mt-1 text-sm text-gray-900">
-              {formatDate(employee.joinDate)}
-            </p>
-          </div>
-
-          <div>
-            <h4 className="text-sm font-medium text-gray-500">Salary</h4>
-            <p className="mt-1 text-sm text-gray-900">
-              {formatCurrency(employee.salary)}
-            </p>
-          </div>
-
-          <div>
-            <h4 className="text-sm font-medium text-gray-500">Status</h4>
-            <p className="mt-1 text-sm text-gray-900">
-              <span
-                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  employee.status === 'active'
-                    ? 'bg-green-100 text-green-800'
-                    : employee.status === 'inactive'
-                    ? 'bg-red-100 text-red-800'
-                    : 'bg-yellow-100 text-yellow-800'
-                }`}
-              >
-                {employee.status}
-              </span>
-            </p>
-          </div>
-        </div>
-
-        <div className="border-t border-gray-200 pt-4">
-          <h4 className="text-sm font-medium text-gray-500 mb-2">Additional Information</h4>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <h5 className="text-xs font-medium text-gray-500">Emergency Contact</h5>
-              <p className="mt-1 text-sm text-gray-900">
-                {employee.emergencyContact?.name || 'Not specified'}
-              </p>
-              <p className="text-sm text-gray-500">
-                {employee.emergencyContact?.phone || ''}
-              </p>
-            </div>
-
-            <div>
-              <h5 className="text-xs font-medium text-gray-500">Address</h5>
-              <p className="mt-1 text-sm text-gray-900">
-                {employee.address || 'Not specified'}
-              </p>
-            </div>
-          </div>
+        <div className="grid grid-cols-2 gap-4 max-h-[60vh] overflow-y-auto">
+          <div><strong>Employee ID:</strong> {employee.employeeId}</div>
+          <div><strong>First Name:</strong> {employee.firstName}</div>
+          <div><strong>Middle Name:</strong> {employee.middleName}</div>
+          <div><strong>Last Name:</strong> {employee.lastName}</div>
+          <div><strong>Nationality:</strong> {employee.nationality}</div>
+          <div><strong>Birthday:</strong> {formatDate(employee.birthday)}</div>
+          <div><strong>Gender:</strong> {employee.gender}</div>
+          <div><strong>Marital Status:</strong> {employee.maritalStatus}</div>
+          <div><strong>SSN Num:</strong> {employee.ssnNum}</div>
+          <div><strong>NIC Num:</strong> {employee.nicNum}</div>
+          <div><strong>Other ID:</strong> {employee.otherId}</div>
+          <div><strong>Employment Status:</strong> {employee.employmentStatus}</div>
+          <div><strong>Job Title:</strong> {employee.jobTitle}</div>
+          <div><strong>Pay Grade:</strong> {employee.payGrade}</div>
+          <div><strong>Work Station ID:</strong> {employee.workStationId}</div>
+          <div><strong>Address 1:</strong> {employee.address1}</div>
+          <div><strong>Address 2:</strong> {employee.address2}</div>
+          <div><strong>City:</strong> {employee.city}</div>
+          <div><strong>Country:</strong> {employee.country}</div>
+          <div><strong>Province:</strong> {employee.province}</div>
+          <div><strong>Postal Code:</strong> {employee.postalCode}</div>
+          <div><strong>Home Phone:</strong> {formatPhoneNumber(employee.homePhone)}</div>
+          <div><strong>Mobile Phone:</strong> {formatPhoneNumber(employee.mobilePhone)}</div>
+          <div><strong>Work Phone:</strong> {formatPhoneNumber(employee.workPhone)}</div>
+          <div><strong>Work Email:</strong> {employee.workEmail}</div>
+          <div><strong>Private Email:</strong> {employee.privateEmail}</div>
+          <div><strong>Joined Date:</strong> {formatDate(employee.joinedDate)}</div>
+          <div><strong>Confirmation Date:</strong> {formatDate(employee.confirmationDate)}</div>
+          <div><strong>Department:</strong> {employee.department}</div>
+          <div><strong>Supervisor:</strong> {employee.supervisor}</div>
+          <div><strong>Tech Lead:</strong> {employee.indirectSupervisors?.techLead}</div>
+          <div><strong>HR Manager:</strong> {employee.indirectSupervisors?.hrManager}</div>
+          <div><strong>Timezone:</strong> {employee.timezone}</div>
+          <div><strong>Status:</strong> {employee.status || 'Active'}</div>
         </div>
 
         <div className="flex justify-end space-x-3 mt-6">
@@ -105,7 +72,7 @@ const EmployeeDetail = ({ employee, onClose, onEdit }) => {
             onClick={onEdit}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
-            Edit 
+            Edit
           </button>
         </div>
       </div>
@@ -113,4 +80,4 @@ const EmployeeDetail = ({ employee, onClose, onEdit }) => {
   );
 };
 
-export default EmployeeDetail; 
+export default EmployeeDetail;

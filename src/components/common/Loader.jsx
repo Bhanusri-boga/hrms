@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 
 const Loader = ({
   size = 'md',
@@ -27,17 +26,17 @@ const Loader = ({
   if (fullScreen) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="flex flex-col items-center space-y-4">
-          {spinner}
-          {text && (
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-white text-sm font-medium"
-            >
-              {text}
-            </motion.p>
-          )}
+        <div className="card flex items-center justify-center min-h-[120px]">
+          <div className="flex flex-col items-center space-y-4">
+            {spinner}
+            {text && (
+              <p
+                className="text-white text-sm font-medium"
+              >
+                {text}
+              </p>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -45,15 +44,15 @@ const Loader = ({
 
   return (
     <div className={`flex flex-col items-center space-y-2 ${className}`}>
-      {spinner}
+      <div className="card flex items-center justify-center min-h-[120px]">
+        {spinner}
+      </div>
       {text && (
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
+        <p
           className="text-gray-500 dark:text-gray-400 text-sm"
         >
           {text}
-        </motion.p>
+        </p>
       )}
     </div>
   );

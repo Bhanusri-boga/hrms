@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 
 const Button = ({
   children,
@@ -42,6 +41,7 @@ const Button = ({
         ${sizes[size]}
         ${disabled || isLoading ? disabledStyles : ''}
         ${className}
+        ${variant === 'primary' ? 'btn-primary' : 'btn-secondary'}
       `}
       {...props}
     >

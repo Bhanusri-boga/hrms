@@ -3,97 +3,106 @@ import { formatDate } from '../../utils/formatUtils';
 
 const TravelList = ({ travels, onView, onEdit, onDelete }) => {
   return (
-    <div className="bg-white shadow-md rounded-lg overflow-hidden">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+    <div className="overflow-x-auto">
+      <table className="w-full divide-y divide-gray-200">
+        <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
               Employee
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
               Purpose
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
               Destination
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
               Dates
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider min-w-[120px]">
               Status
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-4 py-3 text-right text-xs font-medium text-gray-600 uppercase tracking-wider min-w-[210px]">
               Actions
             </th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {travels?.map((travel) => (
-            <tr key={travel.id} className="hover:bg-gray-50">
-              <td className="px-6 py-4 whitespace-nowrap">
+          {travels?.map((travel, index) => (
+            <tr key={travel.id} className={`hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}>
+              <td className="px-4 py-4 whitespace-nowrap">
                 <div className="flex items-center">
                   <div className="flex-shrink-0 h-10 w-10">
-                    <img
-                      className="h-10 w-10 rounded-full"
-                      src={travel.employee.avatar || 'https://via.placeholder.com/40'}
-                      alt={travel.employee.name}
-                    />
+                   <img className="h-10 w-10 rounded-full" src={'https://via.placeholder.com/40'} alt={travel.employeeName}/>
                   </div>
-                  <div className="ml-4">
+ 
+                   <div className="ml-4">
+      <div className="text-sm font-medium text-gray-900">
+        {travel.employeeName}
+      </div>
+      <div className="text-sm text-gray-500">
+        ID: {travel.employeeId}
+      </div>
+    </div>
+                  {/* <div className="ml-4">
                     <div className="text-sm font-medium text-gray-900">
                       {travel.employee.name}
                     </div>
                     <div className="text-sm text-gray-500">
                       {travel.employee.position}
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap">
+              <td className="px-4 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-900">{travel.purpose}</div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap">
+              <td className="px-4 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-900">{travel.destination}</div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap">
+              <td className="px-4 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-900">
                   {formatDate(travel.startDate)} - {formatDate(travel.endDate)}
                 </div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap">
+              <td className="px-4 py-4 whitespace-nowrap">
                 <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  className={`inline-flex items-center px-3 py-1 text-xs font-medium rounded-full border ${
                     travel.status === 'approved'
-                      ? 'bg-green-100 text-green-800'
+                      ? 'bg-green-100 text-green-800 border-green-200'
                       : travel.status === 'pending'
-                      ? 'bg-yellow-100 text-yellow-800'
+                      ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
                       : travel.status === 'rejected'
-                      ? 'bg-red-100 text-red-800'
-                      : 'bg-gray-100 text-gray-800'
+                      ? 'bg-red-100 text-red-800 border-red-200'
+                      : 'bg-gray-100 text-gray-800 border-gray-200'
                   }`}
                 >
                   {travel.status}
                 </span>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button
-                  onClick={() => onView(travel)}
-                  className="text-blue-600 hover:text-blue-900 mr-4"
-                >
-                  View
-                </button>
-                <button
-                  onClick={() => onEdit(travel)}
-                  className="text-indigo-600 hover:text-indigo-900 mr-4"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => onDelete(travel.id)}
-                  className="text-red-600 hover:text-red-900"
-                >
-                  Delete
-                </button>
+              <td className="px-4 py-4 whitespace-nowrap text-right">
+                    
+                <div className="flex justify-end space-x-2">
+          <button className="px-3 py-1 text-xs bg-blue-500 text-white border border-black">Test</button>
+                  <button
+                    onClick={() => onView(travel)}
+                    className="px-3 py-1 text-xs bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors font-medium"
+                  >
+                    View
+                  </button>
+                  <button
+                    onClick={() => onEdit(travel)}
+                    className="px-3 py-1 text-xs bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors font-medium"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => onDelete(travel.id)}
+                    className="px-3 py-1 text-xs bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium"
+                  >
+                    Delete
+                  </button>
+                </div>
               </td>
             </tr>
           ))}

@@ -4,123 +4,52 @@ import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
 
 // Pages
-import Login from '../pages/Login';
+import Login from '../pages/auth/Login';
 import Dashboard from '../pages/Dashboard';
 import Users from '../pages/Users';
-import Employees from '../pages/Employees';
-import Attendance from '../pages/Attendance';
+import Employees from '../pages/employees/EmployeeList';
+import EmployeeDetails from '../pages/employees/EmployeeDetails';
+import Attendance from '../pages/attendance/AttendancePage';
+import LeaveRequests from '../pages/leave/LeaveRequestsPage';
 import TimeSheets from '../pages/TimeSheets';
-import Documents from '../pages/Documents';
-import Salary from '../pages/Salary';
-import Travel from '../pages/Travel';
-import Reports from '../pages/Reports';
-import Settings from '../pages/Settings';
+import Salary from '../pages/salary/Salary';
+import Travel from '../pages/travel/Travel';
+import Documents from '../pages/documents/DocumentsPage';
+import Reports from '../pages/reports/Reports';
+import Settings from '../pages/settings/Settings';
+import Profile from '../pages/profile/Profile';
 import NotFound from '../pages/NotFound';
 import Unauthorized from '../pages/Unauthorized';
+import ForgotPassword from '../pages/auth/ForgotPassword';
+import ResetPassword from '../pages/auth/ResetPassword';
+import NavMenu3DDemo from '../pages/NavMenu3DDemo';
 
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Public Routes */}
-      <Route
-        path="/login"
-        element={
-          <PublicRoute>
-            <Login />
-          </PublicRoute>
-        }
-      />
+      <Route element={<PublicRoute />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+      </Route>
 
-      {/* Protected Routes */}
-      <Route
-        path="/dashboard"
-        element={
-          <PrivateRoute>
-            <Dashboard />
-          </PrivateRoute>
-        }
-      />
-
-      <Route
-        path="/users"
-        element={
-          <PrivateRoute requiredRoles={['admin']}>
-            <Users />
-          </PrivateRoute>
-        }
-      />
-
-      <Route
-        path="/employees"
-        element={
-          <PrivateRoute requiredRoles={['admin', 'manager']}>
-            <Employees />
-          </PrivateRoute>
-        }
-      />
-
-      <Route
-        path="/attendance"
-        element={
-          <PrivateRoute>
-            <Attendance />
-          </PrivateRoute>
-        }
-      />
-
-      <Route
-        path="/timesheets"
-        element={
-          <PrivateRoute>
-            <TimeSheets />
-          </PrivateRoute>
-        }
-      />
-
-      <Route
-        path="/documents"
-        element={
-          <PrivateRoute>
-            <Documents />
-          </PrivateRoute>
-        }
-      />
-
-      <Route
-        path="/salary"
-        element={
-          <PrivateRoute requiredRoles={['admin', 'manager']}>
-            <Salary />
-          </PrivateRoute>
-        }
-      />
-
-      <Route
-        path="/travel"
-        element={
-          <PrivateRoute>
-            <Travel />
-          </PrivateRoute>
-        }
-      />
-
-      <Route
-        path="/reports"
-        element={
-          <PrivateRoute requiredRoles={['admin', 'manager']}>
-            <Reports />
-          </PrivateRoute>
-        }
-      />
-
-      <Route
-        path="/settings"
-        element={
-          <PrivateRoute>
-            <Settings />
-          </PrivateRoute>
-        }
-      />
+      <Route element={<PrivateRoute />}>
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/employees" element={<Employees />} />
+        <Route path="/employees/:id" element={<EmployeeDetails />} />
+        <Route path="/attendance" element={<Attendance />} />
+        <Route path="/leave" element={<LeaveRequests />} />
+        <Route path="/timesheets" element={<TimeSheets />} />
+        <Route path="/salary" element={<Salary />} />
+        <Route path="/travel" element={<Travel />} />
+        <Route path="/documents" element={<Documents />} />
+        <Route path="/reports" element={<Reports />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/nav-menu-3d-demo" element={<NavMenu3DDemo />} />
+      </Route>
 
       {/* Special Routes */}
       <Route path="/unauthorized" element={<Unauthorized />} />
