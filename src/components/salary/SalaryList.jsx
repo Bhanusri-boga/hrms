@@ -1,6 +1,27 @@
 import { formatDate, formatCurrency } from '../../utils/formatUtils';
+import React from 'react';
+import ConfirmationModal from '../common/ConfirmationModal';
 
 const SalaryList = ({ salaries, onView, onEdit, onDelete, onApprove, onReject }) => {
+  const [deleteId, setDeleteId] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+
+  const handleDeleteClick = (id) => {
+    setDeleteId(id);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteId) onDelete(deleteId);
+    setShowDeleteModal(false);
+    setDeleteId(null);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
+    setDeleteId(null);
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-[900px] divide-y divide-gray-200 text-sm">
@@ -44,7 +65,7 @@ const SalaryList = ({ salaries, onView, onEdit, onDelete, onApprove, onReject })
                   <div className="flex justify-end space-x-1">
                     <button onClick={() => onView(salary)} className="px-2 py-1 text-xs bg-blue-50 text-blue-600 rounded hover:bg-blue-100 font-medium">View</button>
                     <button onClick={() => onEdit(salary)} className="px-2 py-1 text-xs bg-indigo-50 text-indigo-600 rounded hover:bg-indigo-100 font-medium">Edit</button>
-                    <button onClick={() => onDelete(salary.id || salary.employeeId)} className="px-2 py-1 text-xs bg-red-50 text-red-600 rounded hover:bg-red-100 font-medium">Delete</button>
+                    <button onClick={() => handleDeleteClick(salary.id || salary.employeeId)} className="px-2 py-1 text-xs bg-red-50 text-red-600 rounded hover:bg-red-100 font-medium">Delete</button>
                     <button onClick={() => onApprove && onApprove(salary)} className="px-2 py-1 text-xs bg-green-50 text-green-600 rounded hover:bg-green-100 font-medium">Approve</button>
                     <button onClick={() => onReject && onReject(salary)} className="px-2 py-1 text-xs bg-yellow-50 text-yellow-600 rounded hover:bg-yellow-100 font-medium">Reject</button>
                   </div>
@@ -54,6 +75,16 @@ const SalaryList = ({ salaries, onView, onEdit, onDelete, onApprove, onReject })
           })}
         </tbody>
       </table>
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        confirmText="Delete"
+        confirmButtonVariant="danger"
+      >
+        Are you sure you want to delete this salary record? This action cannot be undone.
+      </ConfirmationModal>
     </div>
   );
 };

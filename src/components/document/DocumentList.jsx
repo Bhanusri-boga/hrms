@@ -1,7 +1,27 @@
 import React from 'react';
 import { formatDate, formatFileSize } from '../../utils/formatUtils';
+import ConfirmationModal from '../common/ConfirmationModal';
 
 const DocumentList = ({ documents, onView, onDownload, onDelete }) => {
+  const [deleteId, setDeleteId] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+
+  const handleDeleteClick = (id) => {
+    setDeleteId(id);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteId) onDelete(deleteId);
+    setShowDeleteModal(false);
+    setDeleteId(null);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
+    setDeleteId(null);
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full divide-y divide-gray-200">
@@ -82,7 +102,7 @@ const DocumentList = ({ documents, onView, onDownload, onDelete }) => {
                     Download
                   </button>
                   <button
-                    onClick={() => onDelete(document.id)}
+                    onClick={() => handleDeleteClick(document.id)}
                     className="px-3 py-1 text-xs bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium"
                   >
                     Delete
@@ -93,6 +113,16 @@ const DocumentList = ({ documents, onView, onDownload, onDelete }) => {
           ))}
         </tbody>
       </table>
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        confirmText="Delete"
+        confirmButtonVariant="danger"
+      >
+        Are you sure you want to delete this document? This action cannot be undone.
+      </ConfirmationModal>
     </div>
   );
 };

@@ -29,7 +29,7 @@ const EmployeeList = ({ employees, onEdit, onView, onDelete }) => {
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto w-full">
       <table className="w-full divide-y divide-gray-200">
         <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
           <tr>
@@ -50,15 +50,15 @@ const EmployeeList = ({ employees, onEdit, onView, onDelete }) => {
               className={`hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}
             >
               <td className="px-3 py-4">
-                <div className="text-sm font-medium text-indigo-600">
+                {/* <div className="text-sm font-medium text-indigo-600">
                   #{employee.employeeId}
-                </div>
+                </div> */}
               </td>
               <td className="px-3 py-4">
                 <div className="flex items-center">
-                  <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-medium text-xs mr-3 flex-shrink-0">
+                  {/* <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-medium text-xs mr-3 flex-shrink-0">
                     {(employee.firstName?.charAt(0) || '') + (employee.lastName?.charAt(0) || '')}
-                  </div>
+                  </div> */}
                   <div className="min-w-0 flex-1">
                     <div className="text-sm font-medium text-gray-900 truncate">
                       {employee.firstName} {employee.lastName}

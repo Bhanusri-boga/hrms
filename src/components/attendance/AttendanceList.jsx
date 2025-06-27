@@ -1,7 +1,27 @@
 import React from 'react';
 import { formatDate, formatDateTime } from '../../utils/formatUtils';
+import ConfirmationModal from '../common/ConfirmationModal';
 
 const AttendanceList = ({ attendance, onEdit, onView, onDelete }) => {
+  const [deleteId, setDeleteId] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+
+  const handleDeleteClick = (id) => {
+    setDeleteId(id);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteId) onDelete(deleteId);
+    setShowDeleteModal(false);
+    setDeleteId(null);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
+    setDeleteId(null);
+  };
+
   return (
     <div className="bg-white shadow-md rounded-lg overflow-hidden">
       <table className="min-w-full divide-y divide-gray-200">
@@ -35,13 +55,13 @@ const AttendanceList = ({ attendance, onEdit, onView, onDelete }) => {
             <tr key={record.id} className="hover:bg-gray-50">
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
-                  <div className="flex-shrink-0 h-10 w-10">
+                  {/* <div className="flex-shrink-0 h-10 w-10">
                     <img
                       className="h-10 w-10 rounded-full"
                       src={record.employee?.avatar || 'https://via.placeholder.com/40'}
                       alt={record.employee?.name || 'Employee'}
                     />
-                  </div>
+                  </div> */}
                   <div className="ml-4">
                     <div className="text-sm font-medium text-gray-900">
                       {record.employee?.name || '-'}
@@ -105,7 +125,7 @@ const AttendanceList = ({ attendance, onEdit, onView, onDelete }) => {
                   </button>
                 )}
                 <button
-                  onClick={() => onDelete(record.id)}
+                  onClick={() => handleDeleteClick(record.id)}
                   className="px-3 py-1 text-xs bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium"
                 >
                   Delete
@@ -115,6 +135,16 @@ const AttendanceList = ({ attendance, onEdit, onView, onDelete }) => {
           ))}
         </tbody>
       </table>
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        confirmText="Delete"
+        confirmButtonVariant="danger"
+      >
+        Are you sure you want to delete this attendance record? This action cannot be undone.
+      </ConfirmationModal>
     </div>
   );
 };

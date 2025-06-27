@@ -1,8 +1,27 @@
-
 import React from 'react';
 import { formatDate } from '../../utils/formatUtils';
+import ConfirmationModal from '../common/ConfirmationModal';
 
 const TravelList = ({ travels, onView, onEdit, onDelete, onApprove, onReject }) => {
+  const [deleteId, setDeleteId] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+
+  const handleDeleteClick = (id) => {
+    setDeleteId(id);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteId) onDelete(deleteId);
+    setShowDeleteModal(false);
+    setDeleteId(null);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
+    setDeleteId(null);
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full divide-y divide-gray-200">
@@ -94,7 +113,7 @@ const TravelList = ({ travels, onView, onEdit, onDelete, onApprove, onReject }) 
                     Edit
                   </button>
                   <button
-                    onClick={() => onDelete(travel.id)}
+                    onClick={() => handleDeleteClick(travel.id)}
                     className="px-3 py-1 text-xs bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium"
                   >
                     Delete
@@ -121,6 +140,16 @@ const TravelList = ({ travels, onView, onEdit, onDelete, onApprove, onReject }) 
           ))}
         </tbody>
       </table>
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        confirmText="Delete"
+        confirmButtonVariant="danger"
+      >
+        Are you sure you want to delete this travel request? This action cannot be undone.
+      </ConfirmationModal>
     </div>
   );
 };

@@ -1,9 +1,28 @@
 import React from 'react';
 // import { formatDate } from '../../utils/formatUtils';
 // import TimeSheets from "./pages/TimeSheets";
+import ConfirmationModal from '../common/ConfirmationModal';
 
 const TimeSheetList = ({ timeSheets, onView, onEdit, onDelete, onApprove, onReject }) => {
-  
+  const [deleteId, setDeleteId] = React.useState(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+
+  const handleDeleteClick = (id) => {
+    setDeleteId(id);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteId) onDelete(deleteId);
+    setShowDeleteModal(false);
+    setDeleteId(null);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
+    setDeleteId(null);
+  };
+
   const calculateTotalHours = (startTime, endTime, breakDuration) => {
     if (!startTime || !endTime) return 'N/A';
     
@@ -37,9 +56,9 @@ const TimeSheetList = ({ timeSheets, onView, onEdit, onDelete, onApprove, onReje
             <tr key={timeSheet.id} className={`hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}>
               <td className="px-4 py-4">
                 <div className="flex items-center">
-                  <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-medium text-sm mr-3">
+                  {/* <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-medium text-sm mr-3">
                     {timeSheet.employeeName?.split(' ').map(n => n[0]).join('') || 'ID'}
-                  </div>
+                  </div> */}
                   <div>
                     <div className="text-sm font-medium text-gray-900">
                       {timeSheet.employeeName || `Employee ID: ${timeSheet.employeeId}`}
@@ -92,7 +111,7 @@ const TimeSheetList = ({ timeSheets, onView, onEdit, onDelete, onApprove, onReje
                     Edit
                   </button>
                   <button
-                    onClick={() => onDelete(timeSheet.id)}
+                    onClick={() => handleDeleteClick(timeSheet.id)}
                     className="px-2 py-1 text-xs bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors font-medium"
                     title="Delete Timesheet"
                   >
@@ -122,6 +141,16 @@ const TimeSheetList = ({ timeSheets, onView, onEdit, onDelete, onApprove, onReje
           ))}
         </tbody>
       </table>
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        confirmText="Delete"
+        confirmButtonVariant="danger"
+      >
+        Are you sure you want to delete this timesheet entry? This action cannot be undone.
+      </ConfirmationModal>
     </div>
   );
 };
