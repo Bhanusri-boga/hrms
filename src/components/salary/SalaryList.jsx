@@ -23,19 +23,19 @@ const SalaryList = ({ salaries, onView, onEdit, onDelete, onApprove, onReject })
   };
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[900px] divide-y divide-gray-200 text-sm">
+    <div className="w-full overflow-x-auto custom-scrollbar">
+      <table className="min-w-[1000px] w-full text-sm whitespace-nowrap divide-y divide-gray-200">
         <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
           <tr>
             <th className="px-2 py-2 text-left font-medium text-gray-600 uppercase tracking-wider min-w-[80px]">Emp ID</th>
-            <th className="px-2 py-2 text-left font-medium text-gray-600 uppercase tracking-wider min-w-[100px]">Pay Period</th>
-            <th className="px-2 py-2 text-left font-medium text-gray-600 uppercase tracking-wider min-w-[80px]">Basic</th>
-            <th className="px-2 py-2 text-left font-medium text-gray-600 uppercase tracking-wider min-w-[80px]">Allowances</th>
-            <th className="px-2 py-2 text-left font-medium text-gray-600 uppercase tracking-wider min-w-[80px]">Deductions</th>
-            <th className="px-2 py-2 text-left font-medium text-gray-600 uppercase tracking-wider min-w-[80px]">Net</th>
+            <th className="px-2 py-2 text-left font-medium text-gray-600 uppercase tracking-wider min-w-[120px]">Pay Period</th>
+            <th className="px-2 py-2 text-left font-medium text-gray-600 uppercase tracking-wider">Basic</th>
+            <th className="px-2 py-2 text-left font-medium text-gray-600 uppercase tracking-wider">Allowances</th>
+            <th className="px-2 py-2 text-left font-medium text-gray-600 uppercase tracking-wider">Deductions</th>
+            <th className="px-2 py-2 text-left font-medium text-gray-600 uppercase tracking-wider">Net</th>
             <th className="px-2 py-2 text-left font-medium text-gray-600 uppercase tracking-wider min-w-[100px]">Payment</th>
-            <th className="px-2 py-2 text-left font-medium text-gray-600 uppercase tracking-wider min-w-[80px]">Status</th>
-            <th className="px-2 py-2 text-right font-medium text-gray-600 uppercase tracking-wider min-w-[180px]">Actions</th>
+            <th className="px-2 py-2 text-left font-medium text-gray-600 uppercase tracking-wider">Status</th>
+            <th className="px-2 py-2 text-right font-medium text-gray-600 uppercase tracking-wider min-w-[120px]">Actions</th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">

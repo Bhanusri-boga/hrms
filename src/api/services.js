@@ -1,4 +1,4 @@
-import { apiService, endpoints, employeeApi, attendanceApi } from './apiConfig';
+import { apiService, endpoints, employeeApi, attendanceApi } from './apiService';
 
 export const authService = {
   login: (credentials) => apiService.post(endpoints.auth.login, credentials),

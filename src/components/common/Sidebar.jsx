@@ -43,7 +43,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
 
   return (
     <aside
-      className={`fixed left-0 top-16 h-[calc(100vh-4rem)] z-30 flex flex-col bg-white shadow-xl border-r border-gray-100 transition-all duration-300 overflow-hidden ${
+      className={`fixed left-0 top-16 h-[calc(100vh-4rem)] z-30 flex flex-col bg-white shadow-xl border-4 border-gray-100 transition-all duration-300 overflow-hidden ${
         isOpen ? 'w-64' : 'w-[4.5rem]'
       }`}
     >

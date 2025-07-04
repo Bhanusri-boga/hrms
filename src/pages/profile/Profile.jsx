@@ -1,298 +1,170 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
+import { userApi } from '../../api/apiService';
+import { authApi } from '../../api/authApi';
+import { Link } from 'react-router-dom';
 
 const Profile = () => {
   const { user, updateUserProfile } = useAuth();
   const { addNotification } = useNotification();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    bio: '',
-    skills: '',
-    avatar: ''
+    id: '', username: '', email: '', userLevel: '',
+    userRoles: [], status: '', emailVerified: false,
+    lastLogin: '', createdAt: '', updatedAt: ''
   });
+  const [fetchedUser, setFetchedUser] = useState(null);
 
   useEffect(() => {
-    if (user) {
-      setFormData({
-        name: user.name || '',
-        email: user.email || '',
-        phone: user.phone || '',
-        address: user.address || '',
-        bio: user.bio || '',
-        skills: user.skills ? user.skills.join(', ') : '',
-        avatar: user.avatar || ''
-      });
-    }
+    const fetchUser = async () => {
+      try {
+        const data = await authApi.getCurrentUser();
+        setFetchedUser(data);
+        setFormData({ ...data });
+      } catch {
+        setFormData({ ...user });
+      }
+    };
+    fetchUser();
   }, [user]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Convert skills string to array
-      const updatedData = {
-        ...formData,
-        skills: formData.skills.split(',').map(skill => skill.trim()).filter(Boolean)
+      // Prepare payload as per backend schema
+      const payload = {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password, // Only include if you allow password change here
+        userLevel: formData.userLevel,
+        userRoles: Array.isArray(formData.userRoles) ? formData.userRoles : [formData.userRoles],
+        role: formData.role || (Array.isArray(formData.userRoles) ? formData.userRoles[0] : formData.userRoles)
       };
-      
-      await updateUserProfile(updatedData);
+      const updatedUser = await userApi.updateByEmail(formData.email, payload);
+      await updateUserProfile(updatedUser);
       setIsEditing(false);
-      addNotification({
-        type: 'success',
-        message: 'Profile updated successfully'
-      });
+      addNotification({ type: 'success', message: 'Profile updated successfully' });
     } catch (error) {
-      addNotification({
-        type: 'error',
-        message: error.message || 'Failed to update profile'
-      });
+      addNotification({ type: 'error', message: error.message || 'Failed to update profile' });
     }
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    // Reset form data to original user data
-    if (user) {
-      setFormData({
-        name: user.name || '',
-        email: user.email || '',
-        phone: user.phone || '',
-        address: user.address || '',
-        bio: user.bio || '',
-        skills: user.skills ? user.skills.join(', ') : '',
-        avatar: user.avatar || ''
-      });
-    }
+    if (user) setFormData({ ...user });
   };
 
-  // Mock user data for demonstration
-  const mockUser = {
-    id: 1,
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    phone: '+1 (555) 123-4567',
-    address: '123 Main St, Anytown, USA',
-    position: 'Senior Developer',
-    department: 'Engineering',
-    joinDate: '2020-03-15',
-    bio: 'Experienced software developer with a passion for creating efficient and user-friendly applications.',
-    skills: ['JavaScript', 'React', 'Node.js', 'TypeScript', 'GraphQL'],
-    avatar: 'https://randomuser.me/api/portraits/men/1.jpg'
-  };
-
-  // Use mock data if no user is available
-  const displayUser = user || mockUser;
+  const displayUser = fetchedUser || user;
+  if (!user) return <div className="text-center text-gray-600">Loading profile...</div>;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="bg-white shadow-md rounded-lg overflow-hidden">
-        <div className="md:flex">
-          <div className="md:w-1/3 bg-gray-50 p-8 border-r border-gray-200">
-            <div className="text-center">
-              <img
-                src={displayUser.avatar || 'https://via.placeholder.com/150'}
-                alt="Profile"
-                className="h-32 w-32 rounded-full mx-auto mb-4 object-cover"
-              />
-              <h2 className="text-2xl font-bold text-gray-900">{displayUser.name}</h2>
-              <p className="text-gray-600">{displayUser.position}</p>
-              <p className="text-gray-500 text-sm">{displayUser.department}</p>
-              
-              {!isEditing && (
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  Edit Profile
-                </button>
-              )}
-            </div>
-            
+    <div className="max-w-6xl mx-auto p-6">
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="grid md:grid-cols-3">
+
+          {/* Left Panel */}
+          <div className="bg-gradient-to-br from-indigo-100 to-white p-8 border-r">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-2">{displayUser.username}</h2>
+            <p className="text-gray-500 text-sm">{displayUser.email}</p>
+            <ul className="mt-4 space-y-1 text-sm text-gray-600">
+              <li><strong>ID:</strong> {displayUser.id}</li>
+              <li><strong>Level:</strong> {displayUser.userLevel}</li>
+              <li><strong>Roles:</strong> {Array.isArray(displayUser.userRoles) ? displayUser.userRoles.join(', ') : displayUser.userRoles}</li>
+              <li><strong>Status:</strong> {displayUser.status}</li>
+              <li><strong>Email Verified:</strong> {displayUser.emailVerified ? 'Yes' : 'No'}</li>
+              <li><strong>Last Login:</strong> {displayUser.lastLogin ? new Date(displayUser.lastLogin).toLocaleString() : 'N/A'}</li>
+              <li><strong>Created At:</strong> {displayUser.createdAt ? new Date(displayUser.createdAt).toLocaleString() : 'N/A'}</li>
+              <li><strong>Updated At:</strong> {displayUser.updatedAt ? new Date(displayUser.updatedAt).toLocaleString() : 'N/A'}</li>
+            </ul>
             {!isEditing && (
-              <div className="mt-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Contact Information</h3>
-                <div className="space-y-2">
-                  <p className="flex items-center text-gray-700">
-                    <svg className="h-5 w-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    {displayUser.email}
-                  </p>
-                  <p className="flex items-center text-gray-700">
-                    <svg className="h-5 w-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
-                    {displayUser.phone}
-                  </p>
-                  <p className="flex items-center text-gray-700">
-                    <svg className="h-5 w-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    {displayUser.address}
-                  </p>
-                </div>
-              </div>
+              <button
+                onClick={() => setIsEditing(true)}
+                className="mt-6 w-full py-2 px-4 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+              >
+                Edit Profile
+              </button>
             )}
           </div>
-          
-          <div className="md:w-2/3 p-8">
+
+          {/* Right Panel */}
+          <div className="col-span-2 p-8">
             {isEditing ? (
-              <form onSubmit={handleSubmit}>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Edit Profile</h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">Edit Your Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Full Name
-                    </label>
+                    <label className="block text-sm text-gray-700">Username</label>
                     <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
+                      type="text" name="username" value={formData.username}
                       onChange={handleInputChange}
-                      className="w-full p-2 border border-gray-300 rounded"
+                      className="input input-bordered w-full"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Email
-                    </label>
+                    <label className="block text-sm text-gray-700">Email</label>
                     <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
+                      type="email" name="email" value={formData.email}
                       onChange={handleInputChange}
-                      className="w-full p-2 border border-gray-300 rounded"
+                      className="input input-bordered w-full"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Phone
-                    </label>
+                    <label className="block text-sm text-gray-700">User Level</label>
                     <input
-                      type="text"
-                      name="phone"
-                      value={formData.phone}
+                      type="text" name="userLevel" value={formData.userLevel}
                       onChange={handleInputChange}
-                      className="w-full p-2 border border-gray-300 rounded"
+                      className="input input-bordered w-full"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Address
-                    </label>
+                    <label className="block text-sm text-gray-700">Roles</label>
                     <input
-                      type="text"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border border-gray-300 rounded"
+                      type="text" name="userRoles"
+                      value={Array.isArray(formData.userRoles) ? formData.userRoles.join(', ') : formData.userRoles}
+                      onChange={e => setFormData({ ...formData, userRoles: e.target.value.split(',').map(r => r.trim()) })}
+                      className="input input-bordered w-full"
                     />
                   </div>
+                  <div>
+                    <label className="block text-sm text-gray-700">Status</label>
+                    <input
+                      type="text" name="status" value={formData.status}
+                      onChange={handleInputChange}
+                      className="input input-bordered w-full"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox" name="emailVerified" checked={formData.emailVerified}
+                      onChange={handleInputChange}
+                      className="checkbox"
+                    />
+                    <label className="text-sm text-gray-700">Email Verified</label>
+                  </div>
                 </div>
-                
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Bio
-                  </label>
-                  <textarea
-                    name="bio"
-                    value={formData.bio}
-                    onChange={handleInputChange}
-                    rows={4}
-                    className="w-full p-2 border border-gray-300 rounded"
-                  />
-                </div>
-                
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Skills (comma separated)
-                  </label>
-                  <input
-                    type="text"
-                    name="skills"
-                    value={formData.skills}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded"
-                  />
-                </div>
-                
-                <div className="flex justify-end">
-                  <button
-                    type="button"
-                    onClick={handleCancel}
-                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mr-2"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-                  >
-                    Save Changes
-                  </button>
+                <div className="flex justify-end space-x-4">
+                  <button type="button" onClick={handleCancel} className="btn btn-outline">Cancel</button>
+                  <button type="submit" className="btn btn-primary">Save Changes</button>
                 </div>
               </form>
             ) : (
-              <>
-                <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">About Me</h3>
-                  <p className="text-gray-700">{displayUser.bio}</p>
-                </div>
-                
-                <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Skills</h3>
-                  <div className="flex flex-wrap">
-                    {displayUser.skills && displayUser.skills.map((skill, index) => (
-                      <span
-                        key={index}
-                        className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 mb-2 px-3 py-1 rounded"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Employment Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm text-gray-500">Department</p>
-                      <p className="text-gray-900">{displayUser.department}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Position</p>
-                      <p className="text-gray-900">{displayUser.position}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Join Date</p>
-                      <p className="text-gray-900">{new Date(displayUser.joinDate).toLocaleDateString()}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Employee ID</p>
-                      <p className="text-gray-900">{displayUser.id}</p>
-                    </div>
-                  </div>
-                </div>
-              </>
+              <div className="text-center text-gray-500">
+                <p className="mb-2">Click edit to update your profile information.</p>
+              </div>
             )}
           </div>
+
         </div>
       </div>
     </div>

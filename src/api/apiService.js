@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with default config
 const apiService = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL: 'http://192.168.0.19:8080',
   headers: {
     'Content-Type': 'application/json'
   }
@@ -138,4 +138,100 @@ apiService.interceptors.response.use(
   }
 );
 
-export default apiService; 
+export const endpoints = {
+  auth: {
+    login: '/auth/login',
+    register: '/auth/register',
+    logout: '/auth/logout',
+    refreshToken: '/auth/refresh-token',
+    forgotPassword: '/auth/forgot-password',
+    resetPassword: '/auth/reset-password'
+  },
+  users: {
+    base: '/users',
+    profile: '/users/profile',
+    byId: (id) => `/users/${id}`,
+    roles: '/users/roles',
+    existsEmail: (email) => `/users/exists-email/${encodeURIComponent(email)}`
+  },
+  employees: {
+    base: '/employees',
+    byId: (id) => `/employees/${id}`,
+    attendance: (id) => `/employees/${id}/attendance`,
+    documents: (id) => `/employees/${id}/documents`,
+    salary: (id) => `/employees/${id}/salary`
+  },
+  attendance: {
+    base: '/attendance',
+    daily: '/attendance/daily',
+    monthly: '/attendance/monthly',
+    report: '/attendance/report',
+    mark: '/attendance/mark'
+  },
+  // ... add other endpoint groups as needed ...
+};
+
+export const employeeApi = {
+  getAll: () => apiService.get(endpoints.employees.base),
+  getById: (id) => apiService.get(endpoints.employees.byId(id)),
+  create: (data) => apiService.post(endpoints.employees.base, data),
+  update: (id, data) => apiService.put(endpoints.employees.byId(id), data),
+  delete: (id) => apiService.delete(endpoints.employees.byId(id))
+};
+
+export const attendanceApi = {
+  getDailyAttendance: (date) => apiService.get(endpoints.attendance.daily, { params: { date } }),
+  markAttendance: (data) => apiService.post(endpoints.attendance.mark, data),
+  getAttendanceReport: (params) => apiService.get(endpoints.attendance.report, { params })
+};
+
+export const userApi = {
+  getAll: () => apiService.get(endpoints.users.base),
+  getById: (id) => apiService.get(endpoints.users.byId(id)),
+  getProfile: () => apiService.get(endpoints.users.profile),
+  updateProfile: (data) => apiService.put(endpoints.users.profile, data),
+  getByEmail: (email) => apiService.get(`/users/${encodeURIComponent(email)}`),
+  updateByEmail: (email, data) => apiService.put(`/users/${encodeURIComponent(email)}`, data),
+  deleteByEmail: (email) => apiService.delete(`/users/${encodeURIComponent(email)}`),
+  findByEmail: (email) => apiService.get(`/users/find-email/${encodeURIComponent(email)}`),
+  existsEmail: (email) => apiService.get(endpoints.users.existsEmail(email)),
+};
+
+export const travelApi = {
+  getAll: () => apiService.get('/travel'),
+  getById: (id) => apiService.get(`/travel/${id}`),
+  create: (data) => apiService.post('/travel', data),
+  update: (id, data) => apiService.put(`/travel/${id}`, data),
+  delete: (id) => apiService.delete(`/travel/${id}`)
+};
+
+export const timeSheetApi = {
+  getAll: () => apiService.get('/timesheet'),
+  getById: (id) => apiService.get(`/timesheet/${id}`),
+  create: (data) => apiService.post('/timesheet', data),
+  update: (id, data) => apiService.put(`/timesheet/${id}`, data),
+  delete: (id) => apiService.delete(`/timesheet/${id}`)
+};
+
+export const salaryApi = {
+  getAll: () => apiService.get('/salary'),
+  getById: (id) => apiService.get(`/salary/${id}`),
+  create: (data) => apiService.post('/salary', data),
+  update: (id, data) => apiService.put(`/salary/${id}`, data),
+  delete: (id) => apiService.delete(`/salary/${id}`)
+};
+
+export const documentApi = {
+  getAll: () => apiService.get('/documents'),
+  getById: (id) => apiService.get(`/documents/${id}`),
+  create: (data) => apiService.post('/documents', data),
+  update: (id, data) => apiService.put(`/documents/${id}`, data),
+  delete: (id) => apiService.delete(`/documents/${id}`)
+};
+
+export const refreshAccessToken = (refreshToken) => {
+  return apiService.post(`/auth/refresh-token?refreshToken=${encodeURIComponent(refreshToken)}`);
+};
+
+export default apiService;
+export { apiService };

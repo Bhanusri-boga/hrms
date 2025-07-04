@@ -22,6 +22,7 @@ import {
   CurrencyDollarIcon,
   PaperAirplaneIcon,
 } from '@heroicons/react/24/outline';
+import HasRole from '../components/common/HasRole';
 
 const cardBgColors = [
   'bg-green-50',     // Task Box
@@ -276,7 +277,6 @@ const Dashboard = () => {
     { icon: CalendarIcon, label: 'Mark Attendance', onClick: () => navigate('/attendance') },
     { icon: DocumentTextIcon, label: 'Submit Timesheet', onClick: () => navigate('/timesheets') },
     { icon: ChartBarIcon, label: 'View Reports', onClick: () => navigate('/reports') },
-    { icon: CogIcon, label: 'Settings', onClick: () => navigate('/settings') },
   ];
 
   const recentActivities = [
@@ -413,6 +413,17 @@ const Dashboard = () => {
                 <span className="font-medium text-gray-900 group-hover:text-indigo-600">{action.label}</span>
               </button>
             ))}
+            <HasRole roles={['ADMIN', 'HR']}>
+              <button
+                onClick={() => navigate('/settings')}
+                className="w-full flex items-center space-x-3 p-4 rounded-xl bg-gray-50 hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200 text-left group"
+              >
+                <div className="flex-shrink-0 p-2 rounded-lg bg-white group-hover:bg-indigo-100 transition-colors">
+                  <CogIcon className="w-5 h-5 text-gray-600 group-hover:text-indigo-600" />
+                </div>
+                <span className="font-medium text-gray-900 group-hover:text-indigo-600">Settings</span>
+              </button>
+            </HasRole>
           </div>
         </div>
       </div>

@@ -66,6 +66,10 @@ const Travel = () => {
   // Fetch travel requests data
   const { data: travelData, loading } = useFetch(`/travel-requests?status=${filterStatus}`);
 
+  const [searchEmail, setSearchEmail] = useState('');
+  const [searchResult, setSearchResult] = useState(null);
+  const [searching, setSearching] = useState(false);
+
   const handleStatusChange = (e) => {
     setFilterStatus(e.target.value);
   };
@@ -189,12 +193,57 @@ const Travel = () => {
     ? displayData
     : displayData.filter(request => request.status === filterStatus);
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!searchEmail) {
+      setSearchResult(null);
+      return;
+    }
+    setSearching(true);
+    try {
+      const filtered = filteredRequests.filter(r =>
+        (r.employeeName && r.employeeName.toLowerCase().includes(searchEmail.toLowerCase())) ||
+        (r.employeeId && String(r.employeeId) === searchEmail)
+      );
+      setSearchResult(filtered);
+    } catch {
+      setSearchResult([]);
+    } finally {
+      setSearching(false);
+    }
+  };
+
   if (loading && !travelRequests.length) {
     return <div className="flex justify-center items-center h-full">Loading...</div>;
   }
 
   return (
     <div className="container mx-auto px-2 py-2">
+      <form onSubmit={handleSearch} className="flex gap-2 items-center mb-4">
+        <input
+          type="text"
+          placeholder="Search by employee email or ID..."
+          value={searchEmail}
+          onChange={e => setSearchEmail(e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+        />
+        <button
+          type="submit"
+          className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm"
+          disabled={searching}
+        >
+          {searching ? 'Searching...' : 'Search'}
+        </button>
+        {searchResult && (
+          <button
+            type="button"
+            className="ml-2 text-gray-500 underline text-xs"
+            onClick={() => { setSearchResult(null); setSearchEmail(''); }}
+          >
+            Clear
+          </button>
+        )}
+      </form>
       {isFormOpen && (
         <TravelForm
           travel={editingRequest}
@@ -231,7 +280,7 @@ const Travel = () => {
       </div>
 
       <TravelList
-        travels={filteredRequests}
+        travelRequests={searchResult !== null ? searchResult : filteredRequests}
         onView={handleViewDetails}
         onEdit={handleEditRequest}
         onDelete={(request) =>

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import * as attendanceApi from '../../api/attendanceApi';
+import { attendanceApi } from '../../api/apiService';
 
 export const getAttendance = createAsyncThunk(
   'attendance/getAttendance',

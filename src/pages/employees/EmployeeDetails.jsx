@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useNotification } from '../../context/NotificationContext';
-import { getEmployeeById, updateEmployee, deleteEmployee } from '../../api/employeeApi';
+import { employeeApi } from '../../api/apiService';
 
 // Example options (replace with your actual data or fetch from API)
 const positions = ["Manager", "Developer", "Designer", "HR", "Accountant"];
@@ -20,7 +20,7 @@ const EmployeeDetails = () => {
     const fetchEmployee = async () => {
       try {
         setLoading(true);
-        const data = await getEmployeeById(id);
+        const data = await employeeApi.getById(id);
         setEmployee(data);
         setFormData(data);
       } catch (error) {
@@ -46,7 +46,7 @@ const EmployeeDetails = () => {
 
   const handleSave = async () => {
     try {
-      await updateEmployee(id, formData);
+      await employeeApi.update(id, formData);
       setEmployee(formData);
       setIsEditing(false);
       addNotification({
@@ -64,7 +64,7 @@ const EmployeeDetails = () => {
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this employee?')) {
       try {
-        await deleteEmployee(id);
+        await employeeApi.delete(id);
         addNotification({
           type: 'success',
           message: 'Employee deleted successfully'

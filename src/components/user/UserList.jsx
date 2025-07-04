@@ -1,7 +1,7 @@
 import React from 'react';
 import { formatDate } from '../../utils/formatUtils';
 
-const UserList = ({ users, onView, onEdit, onDelete }) => {
+const UserList = ({ users, onView, onEdit, onDelete, canDelete }) => {
   return (
     <div className="overflow-x-auto">
       <table className="w-full divide-y divide-gray-200">
@@ -97,12 +97,14 @@ const UserList = ({ users, onView, onEdit, onDelete }) => {
                   >
                     Edit
                   </button>
-                  <button
-                    onClick={() => onDelete(user.id)}
-                    className="px-3 py-1 text-xs bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium"
-                  >
-                    Delete
-                  </button>
+                  {canDelete && (
+                    <button
+                      onClick={() => onDelete(user)}
+                      className="px-3 py-1 text-xs bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium"
+                    >
+                      Delete
+                    </button>
+                  )}
                 </div>
               </td>
             </tr>

@@ -63,6 +63,9 @@ const TimeSheetList = ({ timeSheets, onView, onEdit, onDelete, onApprove, onReje
                     <div className="text-sm font-medium text-gray-900">
                       {timeSheet.employeeName || `Employee ID: ${timeSheet.employeeId}`}
                     </div>
+                    {timeSheet.email && (
+                      <div className="text-xs text-blue-600">{timeSheet.email}</div>
+                    )}
                     <div className="text-xs text-gray-500">ID: {timeSheet.employeeId}</div>
                   </div>
                 </div>

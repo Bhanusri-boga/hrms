@@ -20,4 +20,4 @@ export {
 export * from './types';
 
 // Export base API and config
-export { default as api, apiService, endpoints } from './apiConfig';
+export { default as api, apiService, endpoints } from './apiService';

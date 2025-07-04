@@ -10,6 +10,7 @@ const mockTimeSheets = [
     id: 1,
     employeeId: 37,
     employeeName: 'John Doe',
+    email: 'john.doe@example.com',
     date: '2025-05-29',
     startTime: '09:00:00',
     endTime: '17:00:00',
@@ -21,6 +22,7 @@ const mockTimeSheets = [
     id: 2,
     employeeId: 42,
     employeeName: 'Jane Smith',
+    email: 'jane.smith@example.com',
     date: '2025-05-29',
     startTime: '10:00:00',
     endTime: '18:30:00',
@@ -37,6 +39,9 @@ const TimeSheets = () => {
   const [viewingTimeSheet, setViewingTimeSheet] = useState(null);
   const [deletingTimeSheetId, setDeletingTimeSheetId] = useState(null);
   const { addNotification } = useNotification();
+  const [searchEmail, setSearchEmail] = useState('');
+  const [searchResult, setSearchResult] = useState(null);
+  const [searching, setSearching] = useState(false);
 
   const handleNewTimeSheet = () => {
     setEditingTimeSheet(null);
@@ -93,8 +98,53 @@ const TimeSheets = () => {
      addNotification({ type: 'warning', message: `Timesheet for ${timesheet.employeeName || 'ID: ' + timesheet.employeeId} rejected.` });
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!searchEmail) {
+      setSearchResult(null);
+      return;
+    }
+    setSearching(true);
+    try {
+      const filtered = timeSheets.filter(ts =>
+        (ts.employeeName && ts.employeeName.toLowerCase().includes(searchEmail.toLowerCase())) ||
+        (ts.email && ts.email === searchEmail)
+      );
+      setSearchResult(filtered);
+    } catch {
+      setSearchResult([]);
+    } finally {
+      setSearching(false);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
+      <form onSubmit={handleSearch} className="flex gap-2 items-center mb-4">
+        <input
+          type="text"
+          placeholder="Search by employee email..."
+          value={searchEmail}
+          onChange={e => setSearchEmail(e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+        />
+        <button
+          type="submit"
+          className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm"
+          disabled={searching}
+        >
+          {searching ? 'Searching...' : 'Search'}
+        </button>
+        {searchResult && (
+          <button
+            type="button"
+            className="ml-2 text-gray-500 underline text-xs"
+            onClick={() => { setSearchResult(null); setSearchEmail(''); }}
+          >
+            Clear
+          </button>
+        )}
+      </form>
       {/* Header Section */}
       <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
         <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
@@ -119,7 +169,7 @@ const TimeSheets = () => {
       {/* TimeSheet List Section */}
       <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
         <TimeSheetList
-          timeSheets={timeSheets}
+          timeSheets={searchResult !== null ? searchResult : timeSheets}
           onView={handleViewTimeSheet}
           onEdit={handleEditTimeSheet}
           onDelete={handleDeleteRequest}

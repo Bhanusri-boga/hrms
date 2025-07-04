@@ -2,6 +2,7 @@
 
 const PREFIX = 'hrms_';
 const TOKEN_KEY = 'auth_token';
+const REFRESH_TOKEN_KEY = 'refresh_token';
 
 export const setItem = (key, value) => {
   try {
@@ -62,4 +63,37 @@ export const setUser = (user) => {
 
 export const removeUser = () => {
   removeItem('user');
+};
+
+export const getRefreshToken = () => {
+  return localStorage.getItem(PREFIX + REFRESH_TOKEN_KEY);
+};
+
+export const setRefreshToken = (refreshToken) => {
+  localStorage.setItem(PREFIX + REFRESH_TOKEN_KEY, refreshToken);
+};
+
+export const removeRefreshToken = () => {
+  localStorage.removeItem(PREFIX + REFRESH_TOKEN_KEY);
+};
+
+// Utility to decode JWT (without verifying signature)
+export const decodeJWT = (token) => {
+  if (!token) return null;
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(function (c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    console.error('Failed to decode JWT:', e);
+    return null;
+  }
 }; 

@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 // import { login as loginApi, logout as logoutApi, getCurrentUser } from '../api/authApi';
 import { authApi } from '../api/authApi';
 
-import { setToken, removeToken, getToken } from '../utils/storageUtils';
+import { setToken, removeToken, getToken, setRefreshToken, getRefreshToken, removeRefreshToken } from '../utils/storageUtils';
+import { decodeJWT } from '../utils/storageUtils';
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -29,9 +30,28 @@ export const AuthProvider = ({ children }) => {
   try {
     const token = getToken();
     if (token) {
-      const userData = await authApi.getCurrentUser();
-      setUser(userData);
-      setIsAuthenticated(true);
+      // Decode token and restore user from payload
+      const decoded = decodeJWT(token);
+      if (decoded) {
+        const role = decoded?.role || decoded?.userRole || decoded?.roles?.[0] || null;
+        const userData = {
+          username: decoded.username || decoded.name || decoded.sub || '',
+          userLevel: decoded.userLevel || '',
+          role,
+          email: decoded.email || decoded.sub || '',
+          userRoles: decoded.roles || [],
+          status: decoded.status,
+          emailVerified: decoded.emailVerified,
+          lastLogin: decoded.lastLogin,
+          createdAt: decoded.createdAt,
+          updatedAt: decoded.updatedAt
+        };
+        setUser(userData);
+        setIsAuthenticated(true);
+      } else {
+        setUser(null);
+        setIsAuthenticated(false);
+      }
     }
   } catch (error) {
     console.error('Auth check failed:', error);
@@ -46,17 +66,27 @@ const login = async (credentials) => {
     console.log('Attempting login with:', credentials);
     const response = await authApi.login(credentials);
     console.log('Login response:', response);
-    
-    // Handle different response structures
-    const token = response.token || response.accessToken;
-    const userData = response.user;
-    
-    if (!token || !userData) {
+
+    // Build user object from response
+    const token = response.accessToken;
+    const refreshToken = response.refreshToken;
+    // Decode token to extract role
+    const decoded = decodeJWT(token);
+    const role = decoded?.role || decoded?.userRole || decoded?.roles?.[0] || null;
+    const userData = {
+      username: response.username,
+      userLevel: response.userLevel,
+      role,
+      // add more fields if backend returns them
+    };
+
+    if (!token || !userData.username) {
       console.error('Invalid login response format:', response);
       throw new Error('Invalid login response from server');
     }
-    
+
     setToken(token);
+    setRefreshToken(refreshToken);
     setUser(userData);
     setIsAuthenticated(true);
     navigate('/');
@@ -69,11 +99,13 @@ const login = async (credentials) => {
 
 const logout = async () => {
   try {
-    await authApi.logout(); // optional depending on backend
+    const refreshToken = getRefreshToken();
+    await authApi.logout(refreshToken);
   } catch (err) {
     console.warn('Logout API failed:', err);
   }
   removeToken();
+  removeRefreshToken();
   setUser(null);
   setIsAuthenticated(false);
   navigate('/login');
@@ -88,7 +120,7 @@ const logout = async () => {
     logout,
     checkAuth,
     // Role helpers
-    hasRole: (role) => user?.userRoles?.includes(role),
+    hasRole: (role) => user?.role === role,
     isMainRole: (role) => user?.role === role
   };
 

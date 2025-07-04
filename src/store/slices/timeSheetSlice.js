@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import * as timeSheetApi from '../../api/timeSheetApi';
+import { timeSheetApi } from '../../api/apiService';
 
 export const getTimeSheets = createAsyncThunk(
   'timeSheets/getTimeSheets',

@@ -1,6 +1,6 @@
 import React from 'react';
 import NavMenu3DExample from '../components/examples/NavMenu3DExample';
-import { BackgroundScene } from '../components/three/BackgroundScene';
+import  BackgroundScene  from '../components/three/BackgroundScene';
 
 const NavMenu3DDemo = () => {
   return (

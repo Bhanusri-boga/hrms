@@ -1,51 +1,70 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from '../../hooks/useForm';
 import Modal from '../common/Modal';
 import FormInput from '../common/FormInput';
 import FormSelect from '../common/FormSelect';
 import Form3D from '../three/Form3D';
 import GlassCard from '../common/GlassCard';
-import { motion } from 'framer-motion';
+import { userApi } from '../../api/apiService';
 
-const UserForm = ({ user, roles, departments, onSubmit, onClose }) => {
+const UserForm = ({ user, onSubmit, onClose }) => {
+  const [editValues, setEditValues] = useState(null);
+  const allRoles = ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE'];
+  const allUserLevels = ['STANDARD', 'PREMIUM', 'ADMIN'];
+
   const { values, errors, handleChange, handleBlur, validateForm } = useForm(
-    {
-      firstName: user?.firstName || '',
-      lastName: user?.lastName || '',
+    editValues || {
+      username: user?.username || '',
       email: user?.email || '',
-      phone: user?.phone || '',
-      roleId: user?.roleId || '',
-      departmentId: user?.departmentId || '',
-      address: user?.address || '',
       password: '',
-      confirmPassword: ''
+      userLevel: user?.userLevel || 'STANDARD',
+      userRoles: user?.userRoles || ['EMPLOYEE'],
+      role: user?.role || 'EMPLOYEE',
     },
     {
-      firstName: { required: true },
-      lastName: { required: true },
+      username: { required: true },
       email: { required: true, email: true },
-      phone: { required: true },
-      roleId: { required: true },
-      departmentId: { required: true },
-      address: { required: true },
       password: { required: !user, minLength: 6 },
-      confirmPassword: {
-        required: !user,
-        minLength: 6,
-        match: { field: 'password', message: 'Passwords do not match' }
-      }
+      userLevel: { required: true },
+      userRoles: { required: true },
+      role: { required: true },
     }
   );
 
-  const handleSubmit = (e) => {
+  // Fetch user by email if editing
+  useEffect(() => {
+    if (user && user.email) {
+      userApi.getByEmail(user.email)
+        .then(data => {
+          setEditValues({
+            username: data.username || '',
+            email: data.email || '',
+            password: '',
+            userLevel: data.userLevel || 'STANDARD',
+            userRoles: data.userRoles || ['EMPLOYEE'],
+            role: data.role || 'EMPLOYEE',
+          });
+        });
+    }
+  }, [user]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
       const formData = { ...values };
-      if (user && !formData.password) {
-        delete formData.password;
-        delete formData.confirmPassword;
+      // Ensure userRoles is always an array
+      if (!Array.isArray(formData.userRoles)) {
+        formData.userRoles = [formData.userRoles];
       }
-      onSubmit(user?.id, formData);
+      if (user && user.email) {
+        // Update existing user by email
+        await userApi.updateByEmail(user.email, formData);
+        onSubmit && onSubmit(user.email, formData);
+      } else {
+        // Create new user
+        await userApi.create(formData);
+        onSubmit && onSubmit(null, formData);
+      }
     }
   };
 
@@ -59,29 +78,15 @@ const UserForm = ({ user, roles, departments, onSubmit, onClose }) => {
         <GlassCard className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormInput
-              label="First Name"
-              name="firstName"
-              value={values.firstName}
+              label="Username"
+              name="username"
+              value={values.username}
               onChange={handleChange}
               onBlur={handleBlur}
-              error={errors.firstName}
+              error={errors.username}
               required
               className="input-3d"
             />
-
-            <FormInput
-              label="Last Name"
-              name="lastName"
-              value={values.lastName}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={errors.lastName}
-              required
-              className="input-3d"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <FormInput
               label="Email"
               name="email"
@@ -93,81 +98,75 @@ const UserForm = ({ user, roles, departments, onSubmit, onClose }) => {
               required
               className="input-3d"
             />
-
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <FormInput
-              label="Phone"
-              name="phone"
-              value={values.phone}
+              label="Password"
+              name="password"
+              type="password"
+              value={values.password}
               onChange={handleChange}
               onBlur={handleBlur}
-              error={errors.phone}
+              error={errors.password}
+              required={!user}
+              className="input-3d"
+            />
+            <FormSelect
+              label="User Level"
+              name="userLevel"
+              value={values.userLevel}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={errors.userLevel}
+              options={allUserLevels.map(level => ({ value: level, label: level }))}
+              required
               className="input-3d"
             />
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <FormSelect
               label="Role"
-              name="roleId"
-              value={values.roleId}
+              name="role"
+              value={values.role}
               onChange={handleChange}
               onBlur={handleBlur}
-              error={errors.roleId}
-              options={roles.map(role => ({
-                value: role.id,
-                label: role.name
-              }))}
+              error={errors.role}
+              options={allRoles.map(role => ({ value: role, label: role }))}
               required
               className="input-3d"
             />
-
             <FormSelect
-              label="Department"
-              name="departmentId"
-              value={values.departmentId}
-              onChange={handleChange}
+              label="User Roles"
+              name="userRoles"
+              value={values.userRoles}
+              onChange={e => handleChange({
+                target: {
+                  name: 'userRoles',
+                  value: Array.from(e.target.selectedOptions, option => option.value)
+                }
+              })}
               onBlur={handleBlur}
-              error={errors.departmentId}
-              options={departments.map(dept => ({
-                value: dept.id,
-                label: dept.name
-              }))}
+              error={errors.userRoles}
+              options={allRoles.map(role => ({ value: role, label: role }))}
               required
               className="input-3d"
+              multiple
             />
           </div>
-
-          <div className="mt-6">
-            <FormInput
-              label="Address"
-              name="address"
-              type="textarea"
-              value={values.address}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={errors.address}
-              className="input-3d h-24"
-            />
-          </div>
-
           <div className="flex justify-end space-x-4 mt-8">
-            <motion.button
+            <button
               type="button"
               onClick={onClose}
               className="btn-secondary"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
             >
               Cancel
-            </motion.button>
-            <motion.button
+            </button>
+            <button
               type="submit"
               className="btn-primary"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
             >
               {user ? 'Update' : 'Create'}
-            </motion.button>
+            </button>
           </div>
         </GlassCard>
       </Form3D>

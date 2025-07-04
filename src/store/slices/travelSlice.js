@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import * as travelApi from '../../api/travelApi';
+import { travelApi } from '../../api/apiService';
 
 export const getTravelRequests = createAsyncThunk(
   'travel/getTravelRequests',

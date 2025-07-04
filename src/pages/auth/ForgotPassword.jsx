@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import { forgotPassword } from '../../api/authApi';
+import { authApi } from '../../api/authApi';
 
 const ForgotPassword = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -10,7 +10,7 @@ const ForgotPassword = () => {
 
   const onSubmit = async (data) => {
     try {
-      await forgotPassword(data.email);
+      await authApi.forgotPassword(data.email);
       setIsSubmitted(true);
       setError(null);
     } catch (error) {
