@@ -21,7 +21,7 @@ const ConfirmationModal = ({
           <div className="py-4 text-sm text-gray-600 dark:text-gray-300">
             {children}
           </div>
-          <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="bg-gray-200 text-gray-800 hover:bg-gray-300 transition-colors duration-200">
             <Button variant="secondary" onClick={onClose}>
               {cancelText}
             </Button>
